@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Learning Hub — с квестами</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+  body {
+    background: linear-gradient(-45deg, #1e3c72, #2a5298, #6a11cb, #2575fc);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* ==== HEADER ==== */
+  header {
+    text-align: center;
+    padding: 50px 20px 20px;
+    animation: fadeDown 1s ease;
+  }
+
+  header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    background: linear-gradient(90deg, #ffd700, #ff6b6b, #4ecdc4, #ffd700);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shine 4s linear infinite;
+    margin-bottom: 15px;
+  }
+
+  @keyframes shine { to { background-position: 300% 0; } }
+
+  header p { font-size: 1.15rem; opacity: 0.9; animation: fadeUp 1.2s ease; }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ==== PROGRESS BAR ==== */
+  .progress-panel {
+    max-width: 700px;
+    margin: 20px auto 10px;
+    padding: 0 20px;
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+
+  .progress-info .level {
+    background: linear-gradient(90deg, #ff6b6b, #ffd700);
+    color: #1e3c72;
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+  }
+
+  .progress-bar {
+    height: 18px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4ecdc4, #ffd700, #ff6b6b);
+    background-size: 200% 100%;
+    border-radius: 50px;
+    transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: progressShine 3s linear infinite;
+  }
+
+  @keyframes progressShine {
+    to { background-position: 200% 0; }
+  }
+
+  .xp-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #1e3c72;
+    text-shadow: 0 0 5px rgba(255,255,255,0.7);
+  }
+
+  /* ==== MENU BUTTON ==== */
+  .menu-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 300;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b, #ffd700);
+    border: none;
+    color: #1e3c72;
+    font-size: 1.6rem;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    transition: all 0.3s ease;
+  }
+
+  .menu-toggle:hover { transform: scale(1.1) rotate(90deg); }
+
+  /* ==== SIDEBAR MENU ==== */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -350px;
+    width: 320px;
+    height: 100vh;
+    background: rgba(15, 20, 60, 0.97);
+    backdrop-filter: blur(15px);
+    z-index: 400;
+    padding: 30px 20px;
+    transition: left 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    overflow-y: auto;
+    border-right: 2px solid rgba(255,215,0,0.3);
+  }
+
+  .sidebar.open { left: 0; }
+
+  .sidebar h3 {
+    color: #ffd700;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,215,0,0.3);
+  }
+
+  .sidebar-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #ffd700;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .sidebar button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .sidebar button:hover {
+    background: rgba(255,215,0,0.2);
+    transform: translateX(8px);
+    border-color: rgba(255,215,0,0.5);
+  }
+
+  .sidebar button.active {
+    background: linear-gradient(90deg, #ff6b6b, #ffd700);
+    color: #1e3c72;
+    font-weight: 700;
+    border-color: transparent;
+  }
+
+  .sidebar button .badge {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #4ecdc4;
+    color: #1e3c72;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 50px;
+    font-weight: 700;
+  }
+
+  .sidebar button.completed::after {
+    content: '✅';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 350;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .overlay.show { opacity: 1; pointer-events: all; }
+
+  /* ==== SEARCH ==== */
+  .search-wrap {
+    max-width: 500px;
+    margin: 0 auto 30px;
+    padding: 0 20px;
+    position: relative;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 14px 45px 14px 20px;
+    border-radius: 50px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+
+  .search-wrap input::placeholder { color: rgba(255,255,255,0.6); }
+  .search-wrap input:focus {
+    border-color: #ffd700;
+    background: rgba(255,255,255,0.15);
+    box-shadow: 0 0 25px rgba(255,215,0,0.3);
+  }
+
+  .search-wrap::after {
+    content: '🔍';
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+  }
+
+  /* ==== MAIN ==== */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 20px 80px;
+  }
+
+  .section { display: none; animation: fadeUp 0.7s ease; }
+  .section.active { display: block; }
+
+  .section h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-align: center;
+    background: linear-gradient(90deg, #ffd700, #ff6b6b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-desc {
+    text-align: center;
+    opacity: 0.85;
+    margin-bottom: 30px;
+    font-style: italic;
+  }
+
+  /* ==== SUBSECTIONS ==== */
+  .subsection { margin-bottom: 35px; }
+
+  .subsection h3 {
+    color: #4ecdc4;
+    font-size: 1.35rem;
+    margin-bottom: 15px;
+    padding-left: 12px;
+    border-left: 4px solid #ffd700;
+  }
+
+  /* ==== VOCAB CARDS ==== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(8px);
+  }
+
+  .card:hover {
+    transform: translateY(-10px) rotate(-1deg) scale(1.03);
+    background: rgba(255,255,255,0.18);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    border-color: rgba(255,215,0,0.6);
+  }
+
+  .card .word { font-size: 1.4rem; font-weight: 700; color: #ffd700; margin-bottom: 8px; }
+  .card .transcription { font-size: 0.9rem; color: #4ecdc4; margin-bottom: 8px; font-style: italic; }
+  .card .translation { font-size: 1rem; opacity: 0.95; }
+
+  /* ==== RULE BOXES ==== */
+  .rule-box {
+    background: rgba(255,255,255,0.1);
+    border-left: 5px solid #ffd700;
+    padding: 22px;
+    border-radius: 15px;
+    margin-bottom: 22px;
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s ease;
+  }
+
+  .rule-box:hover { transform: translateX(8px); background: rgba(255,255,255,0.15); }
+  .rule-box h3 { color: #ffd700; margin-bottom: 14px; font-size: 1.25rem; }
+  .rule-box p, .rule-box li { line-height: 1.8; font-size: 1.02rem; }
+  .rule-box ul, .rule-box ol { margin-left: 25px; margin-top: 10px; }
+
+  .example {
+    background: rgba(78, 205, 196, 0.15);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-top: 12px;
+    font-style: italic;
+    border-left: 3px solid #4ecdc4;
+    line-height: 1.8;
+  }
+  .example strong { color: #ffd700; font-style: normal; }
+
+  .tip {
+    background: rgba(255, 215, 0, 0.12);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-top: 12px;
+    border-left: 3px solid #ffd700;
+  }
+  .tip::before { content: '💡 '; }
+
+  /* ==== TABLE ==== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th, td { padding: 13px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.15); font-size: 0.98rem; }
+  th { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: 700; }
+  tr:hover td { background: rgba(255,255,255,0.08); }
+
+  /* ==== DIALOG ==== */
+  .dialog {
+    background: rgba(0,0,0,0.2);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 15px;
+  }
+  .dialog-line {
+    margin-bottom: 10px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    max-width: 85%;
+    line-height: 1.6;
+  }
+  .dialog-line.a { background: rgba(78, 205, 196, 0.25); margin-right: auto; }
+  .dialog-line.b { background: rgba(255, 215, 0, 0.2); margin-left: auto; }
+  .dialog-line .speaker { font-weight: 700; color: #ffd700; margin-right: 6px; }
+  .dialog-line .ru { display: block; font-size: 0.88rem; opacity: 0.75; font-style: italic; }
+
+  /* ============================================ */
+  /* ============ QUEST / GAME STYLES =========== */
+  /* ============================================ */
+
+  .quest-launch {
+    text-align: center;
+    margin: 25px 0;
+  }
+
+  .quest-launch button {
+    padding: 16px 40px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #ff6b6b, #ffd700);
+    color: #1e3c72;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .quest-launch button:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(255,215,0,0.6);
+  }
+
+  .quest-launch button:active { transform: translateY(-1px) scale(0.98); }
+
+  /* ==== QUEST MODAL ==== */
+  .quest-modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .quest-modal.show { display: flex; }
+
+  .quest-window {
+    background: linear-gradient(145deg, rgba(30,60,114,0.98), rgba(106,17,203,0.95));
+    border: 2px solid rgba(255,215,0,0.4);
+    border-radius: 25px;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 30px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    animation: questPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes questPop {
+    from { transform: scale(0.7) translateY(50px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .quest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,215,0,0.3);
+  }
+
+  .quest-header h3 {
+    color: #ffd700;
+    font-size: 1.4rem;
+  }
+
+  .quest-close {
+    background: transparent;
+    border: none;
+    color: #ff6b6b;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .quest-close:hover { transform: rotate(90deg) scale(1.2); }
+
+  .quest-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 15px;
+  }
+
+  .quest-stat {
+    text-align: center;
+  }
+
+  .quest-stat .value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffd700;
+  }
+
+  .quest-stat .label {
+    font-size: 0.8rem;
+    opacity: 0.75;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ==== QUESTION ==== */
+  .question-text {
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    font-weight: 600;
+  }
+
+  .question-word {
+    display: block;
+    font-size: 2rem;
+    color: #ffd700;
+    margin: 15px 0 8px;
+  }
+
+  .question-transcription {
+    display: block;
+    color: #4ecdc4;
+    font-size: 1rem;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+
+  /* ==== OPTIONS ==== */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .option {
+    padding: 18px 20px;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1.05rem;
+    color: #fff;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  .option:hover {
+    background: rgba(255,215,0,0.2);
+    border-color: #ffd700;
+    transform: translateY(-3px);
+  }
+
+  .option.correct {
+    background: rgba(76, 175, 80, 0.4);
+    border-color: #4caf50;
+    animation: pulse 0.5s ease;
+  }
+
+  .option.wrong {
+    background: rgba(244, 67, 54, 0.4);
+    border-color: #f44336;
+    animation: shake 0.5s ease;
+  }
+
+  .option.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
+
+  /* ==== INPUT ANSWER ==== */
+  .answer-input {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 1.1rem;
+    border-radius: 15px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    outline: none;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+  }
+
+  .answer-input::placeholder { color: rgba(255,255,255,0.5); }
+  .answer-input:focus { border-color: #ffd700; background: rgba(255,255,255,0.15); }
+
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #4ecdc4, #2575fc);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(78,205,196,0.4);
+  }
+
+  /* ==== FEEDBACK ==== */
+  .feedback {
+    margin-top: 20px;
+    padding: 15px 20px;
+    border-radius: 15px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: center;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .feedback.success {
+    background: rgba(76, 175, 80, 0.25);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+  }
+
+  .feedback.error {
+    background: rgba(244, 67, 54, 0.25);
+    border: 2px solid #f44336;
+    color: #ef9a9a;
+  }
+
+  /* ==== RESULT SCREEN ==== */
+  .result-screen {
+    text-align: center;
+    padding: 20px;
+    animation: fadeUp 0.6s ease;
+  }
+
+  .result-emoji {
+    font-size: 5rem;
+    margin-bottom: 15px;
+    animation: bounce 1s ease infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .result-screen h3 {
+    font-size: 2rem;
+    background: linear-gradient(90deg, #ffd700, #ff6b6b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 15px;
+  }
+
+  .result-screen p { font-size: 1.1rem; margin-bottom: 10px; opacity: 0.9; }
+
+  .result-xp {
+    display: inline-block;
+    padding: 10px 25px;
+    background: linear-gradient(135deg, #ff6b6b, #ffd700);
+    color: #1e3c72;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 15px 0;
+  }
+
+  .result-screen button {
+    display: block;
+    margin: 15px auto 0;
+    padding: 14px 35px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #4ecdc4, #2575fc);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .result-screen button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(78,205,196,0.4);
+  }
+
+  /* ==== XP POPUP ==== */
+  .xp-popup {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50px);
+    background: linear-gradient(135deg, #ffd700, #ff6b6b);
+    color: #1e3c72;
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    box-shadow: 0 15px 40px rgba(255,215,0,0.5);
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .xp-popup.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ==== ACHIEVEMENT TOAST ==== */
+  .achievement-toast {
+    position: fixed;
+    top: 100px;
+    right: -400px;
+    background: linear-gradient(135deg, rgba(78,205,196,0.95), rgba(37,117,252,0.95));
+    border: 2px solid #ffd700;
+    padding: 18px 25px;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    max-width: 320px;
+    transition: right 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+
+  .achievement-toast.show { right: 20px; }
+  .achievement-toast .icon { font-size: 2.5rem; }
+  .achievement-toast .text .title { font-weight: 700; color: #ffd700; font-size: 1rem; margin-bottom: 3px; }
+  .achievement-toast .text .desc { font-size: 0.85rem; opacity: 0.9; }
+
+  /* ==== PROGRESS BAR IN SIDEBAR ==== */
+  .sidebar .mini-progress {
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(255,215,0,0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255,215,0,0.3);
+  }
+
+  .sidebar .mini-progress .label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .sidebar .mini-progress .bar {
+    height: 8px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 50px;
+    overflow: hidden;
+  }
+
+  .sidebar .mini-progress .bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4ecdc4, #ffd700);
+    border-radius: 50px;
+    transition: width 0.6s ease;
+  }
+
+  /* ==== SCROLL TOP ==== */
+  #scrollTop {
+    position: fixed; bottom: 25px; right: 25px;
+    width: 50px; height: 50px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b, #ffd700);
+    color: #1e3c72; border: none; font-size: 1.5rem; cursor: pointer;
+    opacity: 0; pointer-events: none; transition: all 0.4s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4); z-index: 200;
+  }
+  #scrollTop.show { opacity: 1; pointer-events: all; }
+  #scrollTop:hover { transform: translateY(-5px) scale(1.1); }
+
+  footer { text-align: center; padding: 30px 20px; opacity: 0.7; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.15); }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .card .word { font-size: 1.15rem; }
+    .sidebar { width: 85%; left: -100%; }
+    th, td { padding: 10px; font-size: 0.85rem; }
+    .section h2 { font-size: 1.5rem; }
+    .options { grid-template-columns: 1fr; }
+    .quest-window { padding: 20px; }
+    .achievement-toast { max-width: 85%; }
+  }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle">☰</button>
+<div class="overlay" id="overlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <button class="sidebar-close" id="sidebarClose">✕</button>
+  <h3>📚 Выбери тему</h3>
+  <button class="active" data-target="home">🏠 Главная</button>
+  <button data-target="family">👨‍👩‍👧 Family Members</button>
+  <button data-target="appearance">👤 Appearance</button>
+  <button data-target="possessive">🔑 Possessive Case</button>
+  <button data-target="pronouns">🔤 Possessive Pronouns</button>
+  <button data-target="identification">🆔 ID Cards</button>
+  <button data-target="personal-info">💬 Personal Information</button>
+  <button data-target="dialogs">🗣️ Dialogues</button>
+  <button data-target="compare">⚖️ Comparing People</button>
+  <button data-target="progress">🏆 Прогресс и достижения</button>
+
+  <div class="mini-progress">
+    <div class="label"><span>Твой уровень</span><span id="sidebarLevel">1</span></div>
+    <div class="bar"><div class="bar-fill" id="sidebarBar"></div></div>
+    <div class="label" style="margin-top:6px;"><span id="sidebarXP">0 XP</span><span id="sidebarRank">🥉 Новичок</span></div>
+  </div>
+</aside>
+
+<header>
+  <h1>English Learning Hub</h1>
+  <p>✨ Учись, играя — проходи квесты и зарабатывай XP! ✨</p>
+</header>
+
+<div class="progress-panel">
+  <div class="progress-info">
+    <span class="level">⭐ Уровень <span id="levelNum">1</span></span>
+    <span id="rankName">🥉 Новичок</span>
+    <span id="xpCount">0 / 100 XP</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+    <span class="xp-text" id="progressText">0%</span>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <input type="text" id="searchInput" placeholder="Поиск слова на английском или русском…">
+</div>
+
+<main>
+
+  <!-- ===== HOME ===== -->
+  <section class="section active" id="home">
+    <h2>🏠 Добро пожаловать!</h2>
+    <p class="section-desc">Изучай темы и проходи квесты, чтобы зарабатывать XP и повышать уровень!</p>
+
+    <div class="rule-box">
+      <h3>🎮 Как играть?</h3>
+      <ul>
+        <li>📖 Изучай слова и правила в каждом разделе</li>
+        <li>🎯 Внизу каждого раздела — кнопка <strong>«Начать квест»</strong></li>
+        <li>✅ Отвечай на вопросы, зарабатывай <strong>XP (очки опыта)</strong></li>
+        <li>⭐ Каждые <strong>100 XP = новый уровень</strong></li>
+        <li>🏅 За успехи получай <strong>достижения</strong> и титулы</li>
+        <li>🏆 Следи за прогрессом в разделе <strong>«Прогресс»</strong></li>
+      </ul>
+      <div class="tip">За каждый правильный ответ: <strong>+10 XP</strong>. За идеальный квест (без ошибок): <strong>бонус +20 XP</strong>!</div>
+    </div>
+
+    <div class="rule-box">
+      <h3>🎯 Три типа квестов</h3>
+      <ul>
+        <li><strong>🔤 Тест</strong> — выбери правильный перевод из 4 вариантов</li>
+        <li><strong>✍️ Перевод</strong> — напиши перевод слова вручную</li>
+        <li><strong>🧩 Пазл</strong> — собери предложение из перемешанных слов</li>
+      </ul>
+    </div>
+
+    <div class="rule-box">
+      <h3>🏆 Титулы за XP</h3>
+      <table>
+        <tr><th>XP</th><th>Титул</th></tr>
+        <tr><td>0 – 99</td><td>🥉 Новичок</td></tr>
+        <tr><td>100 – 299</td><td>🥈 Ученик</td></tr>
+        <tr><td>300 – 599</td><td>🥇 Знаток</td></tr>
+        <tr><td>600 – 999</td><td>💎 Мастер</td></tr>
+        <tr><td>1000+</td><td>👑 Гуру английского</td></tr>
+      </table>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="alert('Открой любой раздел в меню ☰ слева и нажми «Начать квест»!')">🚀 Как начать?</button>
+    </div>
+  </section>
+
+  <!-- ===== FAMILY ===== -->
+  <section class="section" id="family">
+    <h2>👨‍👩‍👧 Family Members</h2>
+    <p class="section-desc">Семья Билла Фиппса — учим родственные связи</p>
+
+    <div class="rule-box">
+      <h3>🌳 Family Tree — Семейное древо Билла</h3>
+      <table>
+        <tr><th>Член семьи</th><th>Транскрипция</th><th>Перевод</th></tr>
+        <tr><td>Bill's grandfather (grandpa)</td><td>/ˈɡrænˌfɑːðə/</td><td>дедушка Билла</td></tr>
+        <tr><td>Bill's grandmother (grandma)</td><td>/ˈɡrænˌmʌðə/</td><td>бабушка Билла</td></tr>
+        <tr><td>Bill's father (dad)</td><td>/ˈfɑːðə/</td><td>папа Билла</td></tr>
+        <tr><td>Bill's mother (mum)</td><td>/ˈmʌðə/</td><td>мама Билла</td></tr>
+        <tr><td>Bill's uncle</td><td>/ˈʌŋkl/</td><td>дядя Билла</td></tr>
+        <tr><td>Bill's aunt</td><td>/ɑːnt/</td><td>тётя Билла</td></tr>
+        <tr><td>Bill's sisters</td><td>/ˈsɪstəz/</td><td>сёстры Билла</td></tr>
+        <tr><td>Bill's cousins</td><td>/ˈkʌznz/</td><td>двоюродные Билла</td></tr>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <h3>📚 Все слова по теме «Семья»</h3>
+      <div class="grid">
+        <div class="card"><div class="word">family</div><div class="transcription">/ˈfæmɪli/</div><div class="translation">семья</div></div>
+        <div class="card"><div class="word">mother / mum</div><div class="transcription">/ˈmʌðə/ /mʌm/</div><div class="translation">мама</div></div>
+        <div class="card"><div class="word">father / dad</div><div class="transcription">/ˈfɑːðə/ /dæd/</div><div class="translation">папа</div></div>
+        <div class="card"><div class="word">parents</div><div class="transcription">/ˈpeərənts/</div><div class="translation">родители</div></div>
+        <div class="card"><div class="word">grandmother / grandma</div><div class="transcription">/ˈɡrænˌmʌðə/</div><div class="translation">бабушка</div></div>
+        <div class="card"><div class="word">grandfather / grandpa</div><div class="transcription">/ˈɡrænˌfɑːðə/</div><div class="translation">дедушка</div></div>
+        <div class="card"><div class="word">sister</div><div class="transcription">/ˈsɪstə/</div><div class="translation">сестра</div></div>
+        <div class="card"><div class="word">brother</div><div class="transcription">/ˈbrʌðə/</div><div class="translation">брат</div></div>
+        <div class="card"><div class="word">aunt</div><div class="transcription">/ɑːnt/</div><div class="translation">тётя</div></div>
+        <div class="card"><div class="word">uncle</div><div class="transcription">/ˈʌŋkl/</div><div class="translation">дядя</div></div>
+        <div class="card"><div class="word">cousin</div><div class="transcription">/ˈkʌzn/</div><div class="translation">двоюродный брат/сестра</div></div>
+        <div class="card"><div class="word">son</div><div class="transcription">/sʌn/</div><div class="translation">сын</div></div>
+        <div class="card"><div class="word">daughter</div><div class="transcription">/ˈdɔːtə/</div><div class="translation">дочь</div></div>
+        <div class="card"><div class="word">husband</div><div class="transcription">/ˈhʌzbənd/</div><div class="translation">муж</div></div>
+        <div class="card"><div class="word">wife</div><div class="transcription">/waɪf/</div><div class="translation">жена</div></div>
+        <div class="card"><div class="word">twins</div><div class="transcription">/twɪnz/</div><div class="translation">близнецы</div></div>
+      </div>
+    </div>
+
+    <div class="rule-box">
+      <h3>📖 Текст о семье Билла</h3>
+      <p><em>Hi! I'm Bill Phelps and I'm thirteen years old. I'm from Sydney, Australia. Here is a photo of my family and our relatives. My parents' names are Sue and Sam. My dad is short with dark hair. My mum is tall with short, fair hair. I haven't got a brother but I've got two sisters. They're twins. Their names are Kim and Kate and they're eight years old. Mike is my father's brother. He's a doctor and he's married to Janet. They've got two children, Johnny and Gill. Tom and Beth are my grandparents. They are in their late sixties.</em></p>
+      <div class="example">
+        <strong>Перевод:</strong> Привет! Я Билл Фелпс, мне 13 лет. Я из Сиднея, Австралия. Вот фото моей семьи и наших родственников. Моих родителей зовут Сью и Сэм. Мой папа невысокий, с тёмными волосами. Моя мама высокая, со светлыми короткими волосами. У меня нет брата, но есть две сестры. Они близнецы. Их зовут Ким и Кейт, им по 8 лет. Майк — брат моего отца. Он врач, женат на Джанет. У них двое детей — Джонни и Джилл. Том и Бет — мои бабушка и дедушка. Им около 70 лет.
+      </div>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="startQuest('family')">🎮 Начать квест: Family</button>
+    </div>
+  </section>
+
+  <!-- ===== APPEARANCE ===== -->
+  <section class="section" id="appearance">
+    <h2>👤 Appearance — Внешность</h2>
+    <p class="section-desc">Как описать внешность человека</p>
+
+    <div class="rule-box">
+      <h3>📌 Категории описания</h3>
+      <ul>
+        <li><strong>age</strong> /eɪdʒ/ — возраст</li>
+        <li><strong>hair</strong> /heə/ — волосы</li>
+        <li><strong>height</strong> /haɪt/ — рост</li>
+        <li><strong>weight</strong> /weɪt/ — вес</li>
+        <li><strong>facial features</strong> /ˈfeɪʃl ˈfiːtʃəz/ — черты лица</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <h3>🎂 Возраст — Age</h3>
+      <div class="grid">
+        <div class="card"><div class="word">young</div><div class="transcription">/jʌŋ/</div><div class="translation">молодой</div></div>
+        <div class="card"><div class="word">old</div><div class="transcription">/əʊld/</div><div class="translation">старый</div></div>
+        <div class="card"><div class="word">middle-aged</div><div class="transcription">/ˈmɪdl eɪdʒd/</div><div class="translation">средних лет</div></div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>💇 Волосы — Hair</h3>
+      <div class="grid">
+        <div class="card"><div class="word">fair</div><div class="transcription">/feə/</div><div class="translation">светлые</div></div>
+        <div class="card"><div class="word">dark</div><div class="transcription">/dɑːk/</div><div class="translation">тёмные</div></div>
+        <div class="card"><div class="word">grey</div><div class="transcription">/ɡreɪ/</div><div class="translation">седые</div></div>
+        <div class="card"><div class="word">short</div><div class="transcription">/ʃɔːt/</div><div class="translation">короткие</div></div>
+        <div class="card"><div class="word">long</div><div class="transcription">/lɒŋ/</div><div class="translation">длинные</div></div>
+        <div class="card"><div class="word">straight</div><div class="transcription">/streɪt/</div><div class="translation">прямые</div></div>
+        <div class="card"><div class="word">wavy</div><div class="transcription">/ˈweɪvi/</div><div class="translation">волнистые</div></div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>📏 Рост и вес</h3>
+      <div class="grid">
+        <div class="card"><div class="word">tall</div><div class="transcription">/tɔːl/</div><div class="translation">высокий</div></div>
+        <div class="card"><div class="word">short</div><div class="transcription">/ʃɔːt/</div><div class="translation">низкий</div></div>
+        <div class="card"><div class="word">slim</div><div class="transcription">/slɪm/</div><div class="translation">стройный</div></div>
+        <div class="card"><div class="word">fat</div><div class="transcription">/fæt/</div><div class="translation">полный</div></div>
+        <div class="card"><div class="word">plump</div><div class="transcription">/plʌmp/</div><div class="translation">пухлый</div></div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>👀 Черты лица</h3>
+      <div class="grid">
+        <div class="card"><div class="word">big</div><div class="transcription">/bɪɡ/</div><div class="translation">большой</div></div>
+        <div class="card"><div class="word">small</div><div class="transcription">/smɔːl/</div><div class="translation">маленький</div></div>
+        <div class="card"><div class="word">eyes</div><div class="transcription">/aɪz/</div><div class="translation">глаза</div></div>
+        <div class="card"><div class="word">nose</div><div class="transcription">/nəʊz/</div><div class="translation">нос</div></div>
+        <div class="card"><div class="word">mouth</div><div class="transcription">/maʊθ/</div><div class="translation">рот</div></div>
+        <div class="card"><div class="word">head</div><div class="transcription">/hed/</div><div class="translation">голова</div></div>
+        <div class="card"><div class="word">ears</div><div class="transcription">/ɪəz/</div><div class="translation">уши</div></div>
+      </div>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="startQuest('appearance')">🎮 Начать квест: Appearance</button>
+    </div>
+  </section>
+
+  <!-- ===== POSSESSIVE ===== -->
+  <section class="section" id="possessive">
+    <h2>🔑 Possessive Case — Притяжательный падеж</h2>
+    <p class="section-desc">Правило 's — кому что принадлежит</p>
+
+    <div class="rule-box">
+      <h3>📌 Формула</h3>
+      <p><strong>Существительное + 's</strong> — для одушевлённых (люди, животные)</p>
+      <div class="example">
+        <strong>Johnny's son</strong> — сын Джонни<br>
+        <strong>Bill's father</strong> — папа Билла<br>
+        <strong>Mike's wife</strong> — жена Майка
+      </div>
+    </div>
+
+    <div class="rule-box">
+      <h3>✅ Единственное число — singular noun + 's</h3>
+      <div class="example">
+        <strong>This is Johnny's son.</strong> — Это сын Джонни.
+      </div>
+    </div>
+
+    <div class="rule-box">
+      <h3>✅ Множественное число — plural noun + '</h3>
+      <p>Если слово уже во множественном числе, ставим только апостроф <strong>'</strong> без s:</p>
+      <div class="example">
+        <strong>Bill is the twins' brother.</strong> — Билл — брат близнецов.<br>
+        <strong>My parents' names are Sue and Sam.</strong> — Имена моих родителей — Сью и Сэм.
+      </div>
+    </div>
+
+    <div class="rule-box">
+      <h3>⚡ Двойное владение</h3>
+      <div class="example">
+        <strong>This is Johnny and Gill's dad.</strong> — Это папа Джонни и Джилл.
+      </div>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="startQuest('possessive')">🎮 Начать квест: Possessive Case</button>
+    </div>
+  </section>
+
+  <!-- ===== PRONOUNS ===== -->
+  <section class="section" id="pronouns">
+    <h2>🔤 Possessive Adjectives & Pronouns</h2>
+    <p class="section-desc">My / Mine, Your / Yours — в чём разница?</p>
+
+    <div class="rule-box">
+      <h3>📊 Таблица притяжательных слов</h3>
+      <table>
+        <tr>
+          <th>Местоимение</th>
+          <th>+ сущ.</th>
+          <th>без сущ.</th>
+          <th>Перевод</th>
+        </tr>
+        <tr><td>I</td><td>my</td><td>mine</td><td>мой / моё</td></tr>
+        <tr><td>you</td><td>your</td><td>yours</td><td>твой / твоё</td></tr>
+        <tr><td>he</td><td>his</td><td>his</td><td>его</td></tr>
+        <tr><td>she</td><td>her</td><td>hers</td><td>её</td></tr>
+        <tr><td>it</td><td>its</td><td>its</td><td>его/её (предмет)</td></tr>
+        <tr><td>we</td><td>our</td><td>ours</td><td>наш</td></tr>
+        <tr><td>you</td><td>your</td><td>yours</td><td>ваш</td></tr>
+        <tr><td>they</td><td>their</td><td>theirs</td><td>их</td></tr>
+      </table>
+    </div>
+
+    <div class="rule-box">
+      <h3>💡 Разница на примере</h3>
+      <div class="example">
+        <strong>This is my card.</strong> — Это моя карта.<br>
+        <strong>It's mine.</strong> — Она моя.<br><br>
+        <strong>This is her car.</strong> — Это её машина.<br>
+        <strong>It's hers.</strong> — Она её.
+      </div>
+      <div class="tip">Possessive Adjective всегда стоит ПЕРЕД существительным. Possessive Pronoun заменяет существительное полностью.</div>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="startQuest('pronouns')">🎮 Начать квест: Pronouns</button>
+    </div>
+  </section>
+
+  <!-- ===== IDENTIFICATION ===== -->
+  <section class="section" id="identification">
+    <h2>🆔 Forms of Identification</h2>
+    <p class="section-desc">Виды удостоверений личности</p>
+
+    <div class="subsection">
+      <h3>📄 Виды документов</h3>
+      <div class="grid">
+        <div class="card"><div class="word">identity card</div><div class="transcription">/aɪˈdentəti kɑːd/</div><div class="translation">удостоверение личности</div></div>
+        <div class="card"><div class="word">driving licence</div><div class="transcription">/ˈdraɪvɪŋ ˈlaɪsns/</div><div class="translation">водительские права</div></div>
+        <div class="card"><div class="word">credit card</div><div class="transcription">/ˈkredɪt kɑːd/</div><div class="translation">кредитная карта</div></div>
+        <div class="card"><div class="word">membership card</div><div class="transcription">/ˈmembəʃɪp kɑːd/</div><div class="translation">членская карта</div></div>
+        <div class="card"><div class="word">student card</div><div class="transcription">/ˈstjuːdənt kɑːd/</div><div class="translation">студенческий билет</div></div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>📋 Что указано на карточках</h3>
+      <div class="grid">
+        <div class="card"><div class="word">full name</div><div class="transcription">/fʊl neɪm/</div><div class="translation">полное имя</div></div>
+        <div class="card"><div class="word">home address</div><div class="transcription">/həʊm əˈdres/</div><div class="translation">домашний адрес</div></div>
+        <div class="card"><div class="word">date of birth</div><div class="transcription">/deɪt əv bɜːθ/</div><div class="translation">дата рождения</div></div>
+        <div class="card"><div class="word">identification number</div><div class="transcription">/aɪˌdentɪfɪˈkeɪʃn/</div><div class="translation">идентификационный номер</div></div>
+        <div class="card"><div class="word">expiry date</div><div class="transcription">/ɪkˈspaɪəri deɪt/</div><div class="translation">срок действия</div></div>
+        <div class="card"><div class="word">postcode</div><div class="transcription">/ˈpəʊstkəʊd/</div><div class="translation">почтовый индекс</div></div>
+        <div class="card"><div class="word">phone number</div><div class="transcription">/fəʊn ˈnʌmbə/</div><div class="translation">номер телефона</div></div>
+        <div class="card"><div class="word">nationality</div><div class="transcription">/ˌnæʃəˈnæləti/</div><div class="translation">национальность</div></div>
+      </div>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="startQuest('identification')">🎮 Начать квест: ID Cards</button>
+    </div>
+  </section>
+
+  <!-- ===== PERSONAL INFO ===== -->
+  <section class="section" id="personal-info">
+    <h2>💬 Personal Information</h2>
+    <p class="section-desc">Как спрашивать и давать личную информацию</p>
+
+    <div class="rule-box">
+      <h3>❓ Вопросы</h3>
+      <table>
+        <tr><th>Вопрос</th><th>Транскрипция</th><th>Перевод</th></tr>
+        <tr><td>What's your name?</td><td>/wɒts jɔː neɪm/</td><td>Как тебя зовут?</td></tr>
+        <tr><td>How do you spell it?</td><td>/haʊ duː juː spel ɪt/</td><td>Как это пишется?</td></tr>
+        <tr><td>How old are you?</td><td>/haʊ əʊld ɑː juː/</td><td>Сколько тебе лет?</td></tr>
+        <tr><td>What nationality are you?</td><td>/wɒt ˌnæʃəˈnæləti/</td><td>Какой ты национальности?</td></tr>
+        <tr><td>Where are you from?</td><td>/weər ɑː juː frɒm/</td><td>Откуда ты?</td></tr>
+        <tr><td>What's your home address?</td><td>/wɒts jɔː həʊm əˈdres/</td><td>Какой у тебя домашний адрес?</td></tr>
+        <tr><td>What's your telephone number?</td><td>/wɒts jɔː ˈtelɪfəʊn/</td><td>Какой у тебя номер телефона?</td></tr>
+      </table>
+    </div>
+
+    <div class="rule-box">
+      <h3>🔤 Alphabet — произношение букв по буквам</h3>
+      <table>
+        <tr><th>Буква</th><th>Транскрипция</th><th>Буква</th><th>Транскрипция</th></tr>
+        <tr><td>A a</td><td>/eɪ/</td><td>N n</td><td>/en/</td></tr>
+        <tr><td>B b</td><td>/biː/</td><td>O o</td><td>/əʊ/</td></tr>
+        <tr><td>C c</td><td>/siː/</td><td>P p</td><td>/piː/</td></tr>
+        <tr><td>D d</td><td>/diː/</td><td>Q q</td><td>/kjuː/</td></tr>
+        <tr><td>E e</td><td>/iː/</td><td>R r</td><td>/ɑː/</td></tr>
+        <tr><td>F f</td><td>/ef/</td><td>S s</td><td>/es/</td></tr>
+        <tr><td>G g</td><td>/dʒiː/</td><td>T t</td><td>/tiː/</td></tr>
+        <tr><td>H h</td><td>/eɪtʃ/</td><td>U u</td><td>/juː/</td></tr>
+        <tr><td>I i</td><td>/aɪ/</td><td>V v</td><td>/viː/</td></tr>
+        <tr><td>J j</td><td>/dʒeɪ/</td><td>W w</td><td>/ˈdʌbljuː/</td></tr>
+        <tr><td>K k</td><td>/keɪ/</td><td>X x</td><td>/eks/</td></tr>
+        <tr><td>L l</td><td>/el/</td><td>Y y</td><td>/waɪ/</td></tr>
+        <tr><td>M m</td><td>/em/</td><td>Z z</td><td>/zed/</td></tr>
+      </table>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="startQuest('personal-info')">🎮 Начать квест: Personal Info</button>
+    </div>
+  </section>
+
+  <!-- ===== DIALOGS ===== -->
+  <section class="section" id="dialogs">
+    <h2>🗣️ Dialogues — Диалоги</h2>
+    <p class="section-desc">Готовые диалоги из учебника</p>
+
+    <div class="rule-box">
+      <h3>📚 Диалог 1: В библиотеке</h3>
+      <div class="dialog">
+        <div class="dialog-line a"><span class="speaker">Penny:</span> Hello, how can I help you?<span class="ru">Здравствуйте, чем могу помочь?</span></div>
+        <div class="dialog-line b"><span class="speaker">Jane:</span> I would like to join the book club, please.<span class="ru">Я хотела бы записаться в книжный клуб.</span></div>
+        <div class="dialog-line a"><span class="speaker">Penny:</span> Of course. What's your name?<span class="ru">Конечно. Как вас зовут?</span></div>
+        <div class="dialog-line b"><span class="speaker">Jane:</span> Jane Harris.<span class="ru">Джейн Харрис.</span></div>
+        <div class="dialog-line a"><span class="speaker">Penny:</span> Right, how do you spell that?<span class="ru">Хорошо, как это пишется?</span></div>
+        <div class="dialog-line b"><span class="speaker">Jane:</span> J-A-N-E, H-A-double R-I-S.<span class="ru">Д-Ж-Е-Й-Н, Х-А-двойная Р-И-С.</span></div>
+        <div class="dialog-line a"><span class="speaker">Penny:</span> Thank you, and what's your home address?<span class="ru">Спасибо, а какой у вас адрес?</span></div>
+        <div class="dialog-line b"><span class="speaker">Jane:</span> 10 Peartree Road, London.<span class="ru">10 Пиртри Роуд, Лондон.</span></div>
+      </div>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="startQuest('dialogs')">🎮 Начать квест: Dialogues</button>
+    </div>
+  </section>
+
+  <!-- ===== COMPARE ===== -->
+  <section class="section" id="compare">
+    <h2>⚖️ Comparing People</h2>
+    <p class="section-desc">Конструкции as…as и not as…as</p>
+
+    <div class="rule-box">
+      <h3>📌 «Такой же… как»</h3>
+      <p><strong>as + прилагательное + as</strong></p>
+      <div class="example">
+        <strong>Bill's hair is as short as Tony's.</strong> — Волосы Билла такие же короткие, как у Тони.
+      </div>
+    </div>
+
+    <div class="rule-box">
+      <h3>📌 «Не такой… как»</h3>
+      <p><strong>not as / so + прилагательное + as</strong></p>
+      <div class="example">
+        <strong>Mark is not as tall as Tony.</strong> — Марк не такой высокий, как Тони.
+      </div>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="startQuest('compare')">🎮 Начать квест: Comparing</button>
+    </div>
+  </section>
+
+  <!-- ===== PROGRESS ===== -->
+  <section class="section" id="progress">
+    <h2>🏆 Прогресс и достижения</h2>
+    <p class="section-desc">Твоя статистика обучения</p>
+
+    <div class="rule-box">
+      <h3>📊 Текущий прогресс</h3>
+      <table>
+        <tr><th>Показатель</th><th>Значение</th></tr>
+        <tr><td>⭐ Уровень</td><td id="statLevel">1</td></tr>
+        <tr><td>💎 Всего XP</td><td id="statXP">0</td></tr>
+        <tr><td>🏅 Титул</td><td id="statRank">🥉 Новичок</td></tr>
+        <tr><td>✅ Пройдено квестов</td><td id="statQuests">0 / 9</td></tr>
+        <tr><td>🎯 Правильных ответов</td><td id="statCorrect">0</td></tr>
+        <tr><td>❌ Ошибок</td><td id="statWrong">0</td></tr>
+      </table>
+    </div>
+
+    <div class="rule-box">
+      <h3>🏅 Достижения</h3>
+      <div id="achievementsList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 15px;">
+        <div class="ach-badge" data-ach="first" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; text-align:center; opacity:0.4;">
+          <div style="font-size:2rem;">🎯</div>
+          <div style="font-weight:700; margin-top:5px;">Первый шаг</div>
+          <div style="font-size:0.75rem; opacity:0.7;">Пройди 1-й квест</div>
+        </div>
+        <div class="ach-badge" data-ach="perfect" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; text-align:center; opacity:0.4;">
+          <div style="font-size:2rem;">✨</div>
+          <div style="font-weight:700; margin-top:5px;">Идеально!</div>
+          <div style="font-size:0.75rem; opacity:0.7;">Квест без ошибок</div>
+        </div>
+        <div class="ach-badge" data-ach="master3" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; text-align:center; opacity:0.4;">
+          <div style="font-size:2rem;">🔥</div>
+          <div style="font-weight:700; margin-top:5px;">В ударе</div>
+          <div style="font-size:0.75rem; opacity:0.7;">3 правильных подряд</div>
+        </div>
+        <div class="ach-badge" data-ach="level2" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; text-align:center; opacity:0.4;">
+          <div style="font-size:2rem;">⭐</div>
+          <div style="font-weight:700; margin-top:5px;">Второй уровень</div>
+          <div style="font-size:0.75rem; opacity:0.7;">Достигни 2 уровня</div>
+        </div>
+        <div class="ach-badge" data-ach="master" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; text-align:center; opacity:0.4;">
+          <div style="font-size:2rem;">👑</div>
+          <div style="font-weight:700; margin-top:5px;">Мастер</div>
+          <div style="font-size:0.75rem; opacity:0.7;">5 квестов пройдено</div>
+        </div>
+        <div class="ach-badge" data-ach="allquests" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; text-align:center; opacity:0.4;">
+          <div style="font-size:2rem;">🏆</div>
+          <div style="font-weight:700; margin-top:5px;">Чемпион</div>
+          <div style="font-size:0.75rem; opacity:0.7;">Все квесты пройдены</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quest-launch">
+      <button onclick="resetProgress()" style="background: linear-gradient(135deg, #f44336, #ff6b6b); color:#fff;">🔄 Сбросить прогресс</button>
+    </div>
+  </section>
+
+</main>
+
+<button id="scrollTop">↑</button>
+
+<!-- ===== QUEST MODAL ===== -->
+<div class="quest-modal" id="questModal">
+  <div class="quest-window">
+    <div class="quest-header">
+      <h3 id="questTitle">🎮 Квест</h3>
+      <button class="quest-close" onclick="closeQuest()">✕</button>
+    </div>
+    <div id="questBody"></div>
+  </div>
+</div>
+
+<!-- XP popup -->
+<div class="xp-popup" id="xpPopup">+10 XP</div>
+
+<!-- Achievement toast -->
+<div class="achievement-toast" id="achievementToast">
+  <div class="icon">🏅</div>
+  <div class="text">
+    <div class="title">Достижение получено!</div>
+    <div class="desc" id="achDesc">—</div>
+  </div>
+</div>
+
+<footer>
+  💙 English Learning Hub — учись, играя!
+</footer>
+
+<script>
+  // =============================================
+  // ============ QUEST DATABASE =================
+  // =============================================
+
+  const quests = {
+    family: [
+      { type:'test', q:'Как переводится слово "mother"?', options:['сестра', 'мама', 'тётя', 'дочь'], correct: 1 },
+      { type:'test', q:'Как переводится слово "brother"?', options:['дедушка', 'брат', 'сын', 'дядя'], correct: 1 },
+      { type:'translate', q:'Переведи на английский:', word: 'сестра', correct: ['sister'] },
+      { type:'test', q:'Что означает "grandmother"?', options:['мама', 'тётя', 'бабушка', 'сестра'], correct: 2 },
+      { type:'puzzle', q:'Собери предложение:', words: ['My', 'family', 'is', 'big'], correct: 'My family is big' },
+      { type:'translate', q:'Переведи на английский:', word: 'родители', correct: ['parents'] },
+      { type:'test', q:'Как переводится "cousin"?', options:['двоюродный брат/сестра', 'дядя', 'племянник', 'муж'], correct: 0 },
+      { type:'translate', q:'Переведи на русский:', word: 'daughter', correct: ['дочь'] }
+    ],
+    appearance: [
+      { type:'test', q:'Что означает "tall"?', options:['низкий', 'высокий', 'толстый', 'стройный'], correct: 1 },
+      { type:'test', q:'Как переводится "wavy hair"?', options:['прямые волосы', 'волнистые волосы', 'короткие волосы', 'тёмные волосы'], correct: 1 },
+      { type:'translate', q:'Переведи на английский:', word: 'глаза', correct: ['eyes'] },
+      { type:'test', q:'Как переводится "fair hair"?', options:['тёмные волосы', 'светлые волосы', 'седые волосы', 'длинные волосы'], correct: 1 },
+      { type:'translate', q:'Переведи на русский:', word: 'slim', correct: ['стройный'] },
+      { type:'test', q:'Что означает "middle-aged"?', options:['молодой', 'старый', 'средних лет', 'пожилой'], correct: 2 },
+      { type:'puzzle', q:'Собери предложение:', words: ['My', 'mum', 'is', 'tall'], correct: 'My mum is tall' }
+    ],
+    possessive: [
+      { type:'test', q:'Как правильно?', options:["Bill father", "Bill's father", "Bills father", "Bills' father"], correct: 1 },
+      { type:'test', q:'Множественное число (twins):', options:["twins's brother", "twins' brother", "twins brother", "twins's"], correct: 1 },
+      { type:'translate', q:'Переведи на английский (со \'s):', word: 'папа Билла', correct: ["Bill's father", "Bill's dad"] },
+      { type:'test', q:'Как правильно для родителей?', options:["parents's names", "parents' names", "parent names", "parents names'"], correct: 1 },
+      { type:'test', q:'Папа Джонни и Джилл:', options:["Johnny's and Gill's dad", "Johnny and Gill's dad", "Johnny's and Gill dad", "Johnny and Gills dad"], correct: 1 },
+      { type:'puzzle', q:'Собери предложение:', words: ['This', 'is', "Bill's", 'father'], correct: "This is Bill's father" }
+    ],
+    pronouns: [
+      { type:'test', q:'I → …', options:['my / mine', 'me / mine', 'my / my', 'mine / my'], correct: 0 },
+      { type:'test', q:'She → …', options:['her / hers', 'hers / her', 'her / her', 'she / hers'], correct: 0 },
+      { type:'test', q:'They → …', options:['their / theirs', 'theirs / their', 'their / their', 'them / theirs'], correct: 0 },
+      { type:'test', q:'«Это моя карта. Она моя.» — как сказать?', options:["This is my card. It's my.", "This is my card. It's mine.", "This is mine card. It's my.", "This is mine card. It's mine."], correct: 1 },
+      { type:'translate', q:'Переведи: его (без существительного)', word: 'его', correct: ['his'] },
+      { type:'test', q:'We → …', options:['our / ours', 'ours / our', 'our / our', 'us / ours'], correct: 0 },
+      { type:'puzzle', q:'Собери предложение:', words: ['This', 'is', 'her', 'car'], correct: 'This is her car' }
+    ],
+    identification: [
+      { type:'test', q:'Что означает "driving licence"?', options:['членская карта', 'водительские права', 'паспорт', 'кредитная карта'], correct: 1 },
+      { type:'test', q:'"Date of birth" — это…', options:['место рождения', 'дата рождения', 'адрес', 'имя'], correct: 1 },
+      { type:'translate', q:'Переведи на английский:', word: 'домашний адрес', correct: ['home address'] },
+      { type:'test', q:'"Expiry date" — это…', options:['дата выпуска', 'срок действия', 'подпись', 'номер'], correct: 1 },
+      { type:'translate', q:'Переведи на английский:', word: 'национальность', correct: ['nationality'] },
+      { type:'test', q:'Что означает "postcode"?', options:['номер телефона', 'почтовый индекс', 'имя', 'подпись'], correct: 1 }
+    ],
+    'personal-info': [
+      { type:'test', q:'Как спросить имя?', options:["What's your name?", "Where's your name?", "How's your name?", "Who's your name?"], correct: 0 },
+      { type:'test', q:'Как спросить «Сколько тебе лет?»', options:["What old are you?", "How old are you?", "How years are you?", "What age you?"], correct: 1 },
+      { type:'test', q:'«Откуда ты?»', options:["Where you from?", "Where are you from?", "Where from you?", "From where you?"], correct: 1 },
+      { type:'translate', q:'Переведи на английский:', word: 'Как тебя зовут?', correct: ["what's your name", "what is your name"] },
+      { type:'test', q:'Как спросить «Как это пишется?»', options:["How do you write it?", "How do you spell it?", "How do you say it?", "How do you read it?"], correct: 1 },
+      { type:'puzzle', q:'Собери вопрос:', words: ['What', 'is', 'your', 'name'], correct: 'What is your name' }
+    ],
+    dialogs: [
+      { type:'test', q:'Jane … to join the book club.', options:['would like', 'would likes', 'want', 'wants'], correct: 0 },
+      { type:'test', q:'Penny: «How do you spell that?» Jane: «…»', options:['J-A-N-E, H-A-double R-I-S', 'Jane Harris', 'Jane', 'J-A-N-E-H-A-R-R-I-S'], correct: 0 },
+      { type:'translate', q:'Переведи: Я хотела бы записаться', word: 'Я хотела бы записаться', correct: ["I would like to join", "I'd like to join"] },
+      { type:'test', q:'Адрес Jane:', options:['10 Peartree Road', '20 Peartree Road', '10 Pear Road', '10 Green Street'], correct: 0 },
+      { type:'test', q:'«Hello, how can I help you?» — это…', options:['До свидания', 'Чем могу помочь?', 'Как вас зовут?', 'Сколько вам лет?'], correct: 1 }
+    ],
+    compare: [
+      { type:'test', q:'«Такой же высокий, как…»', options:['tall as', 'as tall as', 'as tall like', 'so tall as'], correct: 1 },
+      { type:'test', q:'«Не такой высокий, как…»', options:['not as tall as', 'not tall as', 'not so tall than', 'no tall as'], correct: 0 },
+      { type:'translate', q:'Переведи на английский: «Билл такой же стройный, как Марк»', word: 'Билл такой же стройный, как Марк', correct: ['bill is as slim as mark'] },
+      { type:'test', q:'«Mark is not as tall … Tony.»', options:['than', 'as', 'like', 'that'], correct: 1 },
+      { type:'puzzle', q:'Собери предложение:', words: ['as', 'tall', 'Bill', 'as', 'Mark', 'is'], correct: 'Bill is as tall as Mark' }
+    ]
+  };
+
+  const questTitles = {
+    family: '👨‍👩‍👧 Family Members',
+    appearance: '👤 Appearance',
+    possessive: '🔑 Possessive Case',
+    pronouns: '🔤 Possessive Pronouns',
+    identification: '🆔 ID Cards',
+    'personal-info': '💬 Personal Information',
+    dialogs: '🗣️ Dialogues',
+    compare: '⚖️ Comparing'
+  };
+
+  // =============================================
+  // ============ GAME STATE =====================
+  // =============================================
+
+  let state = {
+    xp: 0,
+    level: 1,
+    correct: 0,
+    wrong: 0,
+    streak: 0,
+    maxStreak: 0,
+    completedQuests: [],
+    achievements: [],
+    currentQuest: null,
+    currentIndex: 0,
+    currentScore: 0,
+    currentWrong: 0
+  };
+
+  function loadState() {
+    const saved = localStorage.getItem('englishHubState');
+    if (saved) {
+      try { state = { ...state, ...JSON.parse(saved) }; } catch(e) {}
+    }
+    updateProgressUI();
+  }
+
+  function saveState() {
+    localStorage.setItem('englishHubState', JSON.stringify(state));
+  }
+
+  function updateProgressUI() {
+    // Уровень считается каждые 100 XP
+    state.level = Math.floor(state.xp / 100) + 1;
+    const xpInLevel = state.xp % 100;
+    const percent = xpInLevel;
+
+    document.getElementById('levelNum').textContent = state.level;
+    document.getElementById('xpCount').textContent = `${xpInLevel} / 100 XP`;
+    document.getElementById('progressFill').style.width = percent + '%';
+    document.getElementById('progressText').textContent = percent + '%';
+
+    // Титул
+    const rank = getRank(state.xp);
+    document.getElementById('rankName').textContent = rank;
+    document.getElementById('sidebarRank').textContent = rank;
+    document.getElementById('sidebarLevel').textContent = state.level;
+    document.getElementById('sidebarXP').textContent = state.xp + ' XP';
+    document.getElementById('sidebarBar').style.width = percent + '%';
+
+    // Статистика в разделе прогресс
+    document.getElementById('statLevel').textContent = state.level;
+    document.getElementById('statXP').textContent = state.xp;
+    document.getElementById('statRank').textContent = rank;
+    document.getElementById('statQuests').textContent = `${state.completedQuests.length} / 8`;
+    document.getElementById('statCorrect').textContent = state.correct;
+    document.getElementById('statWrong').textContent = state.wrong;
+
+    // Доступность кнопок квестов
+    document.querySelectorAll('.quest-launch button').forEach(btn => {
+      const match = btn.getAttribute('onclick')?.match(/startQuest\('([^']+)'\)/);
+      if (match && state.completedQuests.includes(match[1])) {
+        btn.textContent = '🔁 Пройти заново';
+      }
+    });
+
+    // Достижения
+    updateAchievements();
+
+    // Бейджи в боковом меню
+    document.querySelectorAll('.sidebar button[data-target]').forEach(btn => {
+      const target = btn.dataset.target;
+      btn.classList.toggle('completed', state.completedQuests.includes(target));
+    });
+  }
+
+  function getRank(xp) {
+    if (xp >= 1000) return '👑 Гуру';
+    if (xp >= 600) return '💎 Мастер';
+    if (xp >= 300) return '🥇 Знаток';
+    if (xp >= 100) return '🥈 Ученик';
+    return '🥉 Новичок';
+  }
+
+  // =============================================
+  // ============ ACHIEVEMENTS ===================
+  // =============================================
+
+  const achievementsData = {
+    first:    { icon: '🎯', title: 'Первый шаг', desc: 'Пройден 1-й квест' },
+    perfect:  { icon: '✨', title: 'Идеально!', desc: 'Квест без ошибок' },
+    master3:  { icon: '🔥', title: 'В ударе', desc: '3 правильных подряд' },
+    level2:   { icon: '⭐', title: 'Второй уровень', desc: 'Достигнут 2 уровень' },
+    master:   { icon: '👑', title: 'Мастер', desc: '5 квестов пройдено' },
+    allquests:{ icon: '🏆', title: 'Чемпион', desc: 'Все 8 квестов пройдены' }
+  };
+
+  function unlockAchievement(id) {
+    if (state.achievements.includes(id)) return;
+    state.achievements.push(id);
+    saveState();
+    updateAchievements();
+    showAchievementToast(achievementsData[id]);
+  }
+
+  function updateAchievements() {
+    document.querySelectorAll('.ach-badge').forEach(badge => {
+      const id = badge.dataset.ach;
+      if (state.achievements.includes(id)) {
+        badge.style.opacity = '1';
+        badge.style.background = 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.2))';
+        badge.style.border = '1px solid rgba(255,215,0,0.6)';
+      } else {
+        badge.style.opacity = '0.4';
+        badge.style.background = 'rgba(255,255,255,0.05)';
+        badge.style.border = 'none';
+      }
+    });
+  }
+
+  function showAchievementToast(ach) {
+    const toast = document.getElementById('achievementToast');
+    document.getElementById('achDesc').textContent = ach.desc;
+    toast.querySelector('.icon').textContent = ach.icon;
+    toast.querySelector('.title').textContent = ach.title + '!';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  function checkAchievements() {
+    if (state.completedQuests.length >= 1) unlockAchievement('first');
+    if (state.completedQuests.length >= 5) unlockAchievement('master');
+    if (state.completedQuests.length >= 8) unlockAchievement('allquests');
+    if (state.maxStreak >= 3) unlockAchievement('master3');
+    if (state.level >= 2) unlockAchievement('level2');
+  }
+
+  // =============================================
+  // ============ XP ============================
+  // =============================================
+
+  function addXP(amount) {
+    const prevLevel = state.level;
+    state.xp += amount;
+    saveState();
+    updateProgressUI();
+
+    // Показать всплывашку
+    const popup = document.getElementById('xpPopup');
+    popup.textContent = '+' + amount + ' XP';
+    popup.classList.add('show');
+    setTimeout(() => popup.classList.remove('show'), 1500);
+
+    // Проверка нового уровня
+    const newLevel = Math.floor(state.xp / 100) + 1;
+    if (newLevel > prevLevel) {
+      setTimeout(() => {
+        showAchievementToast({ icon: '⭐', title: 'Новый уровень!', desc: `Уровень ${newLevel} достигнут!` });
+      }, 800);
+    }
+    checkAchievements();
+  }
+
+  // =============================================
+  // ============ QUEST ENGINE ==================
+  // =============================================
+
+  function startQuest(id) {
+    state.currentQuest = id;
+    state.currentIndex = 0;
+    state.currentScore = 0;
+    state.currentWrong = 0;
+    state.streak = 0;
+
+    document.getElementById('questTitle').textContent = '🎮 ' + (questTitles[id] || 'Квест');
+    document.getElementById('questModal').classList.add('show');
+    renderQuestion();
+  }
+
+  function closeQuest() {
+    document.getElementById('questModal').classList.remove('show');
+  }
+
+  function renderQuestion() {
+    const q = quests[state.currentQuest][state.currentIndex];
+    const total = quests[state.currentQuest].length;
+    const body = document.getElementById('questBody');
+
+    let html = `
+      <div class="quest-stats">
+        <div class="quest-stat"><span class="value">${state.currentIndex + 1}/${total}</span><span class="label">Вопрос</span></div>
+        <div class="quest-stat"><span class="value">${state.currentScore}</span><span class="label">Правильно</span></div>
+        <div class="quest-stat"><span class="value">${state.currentWrong}</span><span class="label">Ошибок</span></div>
+      </div>
+    `;
+
+    if (q.type === 'test') {
+      html += `<div class="question-text">${q.q}</div>`;
+      html += `<div class="options">`;
+      q.options.forEach((opt, i) => {
+        html += `<div class="option" data-index="${i}" onclick="checkTest(${i}, ${q.correct})">${opt}</div>`;
+      });
+      html += `</div>`;
+    } else if (q.type === 'translate') {
+      html += `
+        <div class="question-text">
+          ${q.q}
+          <span class="question-word">${q.word}</span>
+        </div>
+        <input type="text" class="answer-input" id="answerInput" placeholder="Напиши ответ…" autocomplete="off" autocapitalize="off">
+        <button class="submit-btn" onclick="checkTranslate()">Проверить</button>
+      `;
+      setTimeout(() => {
+        const inp = document.getElementById('answerInput');
+        if (inp) {
+          inp.focus();
+          inp.addEventListener('keydown', e => { if (e.key === 'Enter') checkTranslate(); });
+        }
+      }, 100);
+    } else if (q.type === 'puzzle') {
+      html += `
+        <div class="question-text">${q.q}</div>
+        <div style="text-align:center; font-size:1.5rem; color:#ffd700; margin: 20px 0; padding: 15px; background:rgba(0,0,0,0.2); border-radius:15px;">
+          ${q.words.join(' → ')}
+        </div>
+        <input type="text" class="answer-input" id="answerInput" placeholder="Собери и напиши предложение…" autocomplete="off">
+        <button class="submit-btn" onclick="checkPuzzle()">Проверить</button>
+      `;
+      setTimeout(() => {
+        const inp = document.getElementById('answerInput');
+        if (inp) {
+          inp.focus();
+          inp.addEventListener('keydown', e => { if (e.key === 'Enter') checkPuzzle(); });
+        }
+      }, 100);
+    }
+
+    body.innerHTML = html;
+  }
+
+  function showFeedback(text, isCorrect) {
+    const body = document.getElementById('questBody');
+    const fb = document.createElement('div');
+    fb.className = 'feedback ' + (isCorrect ? 'success' : 'error');
+    fb.textContent = text;
+    body.appendChild(fb);
+
+    setTimeout(() => {
+      state.currentIndex++;
+      if (state.currentIndex >= quests[state.currentQuest].length) {
+        showResult();
+      } else {
+        renderQuestion();
+      }
+    }, 1500);
+  }
+
+  function checkTest(selected, correct) {
+    document.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
+    const options = document.querySelectorAll('.option');
+    options[correct].classList.add('correct');
+
+    if (selected === correct) {
+      options[selected].classList.add('correct');
+      state.currentScore++;
+      state.correct++;
+      state.streak++;
+      if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+      addXP(10);
+      showFeedback('✅ Верно! +10 XP', true);
+    } else {
+      options[selected].classList.add('wrong');
+      state.currentWrong++;
+      state.wrong++;
+      state.streak = 0;
+      showFeedback('❌ Ошибка. Правильный ответ выделен зелёным.', false);
+    }
+    saveState();
+  }
+
+  function normalize(s) {
+    return s.toLowerCase().trim().replace(/\s+/g, ' ').replace(/[.!?]$/, '');
+  }
+
+  function checkTranslate() {
+    const inp = document.getElementById('answerInput');
+    const val = inp.value;
+    const q = quests[state.currentQuest][state.currentIndex];
+    const ok = q.correct.some(c => normalize(c) === normalize(val));
+
+    inp.disabled = true;
+    document.querySelector('.submit-btn').disabled = true;
+
+    if (ok) {
+      state.currentScore++;
+      state.correct++;
+      state.streak++;
+      if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+      addXP(10);
+      inp.style.borderColor = '#4caf50';
+      showFeedback('✅ Верно! +10 XP', true);
+    } else {
+      state.currentWrong++;
+      state.wrong++;
+      state.streak = 0;
+      inp.style.borderColor = '#f44336';
+      showFeedback('❌ Правильный ответ: ' + q.correct[0], false);
+    }
+    saveState();
+  }
+
+  function checkPuzzle() {
+    const inp = document.getElementById('answerInput');
+    const val = inp.value;
+    const q = quests[state.currentQuest][state.currentIndex];
+    const ok = normalize(q.correct) === normalize(val);
+
+    inp.disabled = true;
+    document.querySelector('.submit-btn').disabled = true;
+
+    if (ok) {
+      state.currentScore++;
+      state.correct++;
+      state.streak++;
+      if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+      addXP(10);
+      inp.style.borderColor = '#4caf50';
+      showFeedback('✅ Верно! +10 XP', true);
+    } else {
+      state.currentWrong++;
+      state.wrong++;
+      state.streak = 0;
+      inp.style.borderColor = '#f44336';
+      showFeedback('❌ Правильный ответ: ' + q.correct, false);
+    }
+    saveState();
+  }
+
+  function showResult() {
+    const total = quests[state.currentQuest].length;
+    const perfect = state.currentWrong === 0;
+    const percent = Math.round(state.currentScore / total * 100);
+
+    let bonus = 0;
+    if (perfect) { bonus = 20; addXP(20); }
+
+    // Отметить квест как пройденный
+    if (!state.completedQuests.includes(state.currentQuest)) {
+      state.completedQuests.push(state.currentQuest);
+    }
+    if (perfect) unlockAchievement('perfect');
+    saveState();
+    checkAchievements();
+
+    let emoji = '😐', title = 'Неплохо!';
+    if (percent === 100) { emoji = '🏆'; title = 'Идеально!'; }
+    else if (percent >= 80) { emoji = '🎉'; title = 'Отлично!'; }
+    else if (percent >= 60) { emoji = '👍'; title = 'Хорошо!'; }
+    else { emoji = '📚'; title = 'Стоит повторить'; }
+
+    const body = document.getElementById('questBody');
+    body.innerHTML = `
+      <div class="result-screen">
+        <div class="result-emoji">${emoji}</div>
+        <h3>${title}</h3>
+        <p>Правильно: <strong>${state.currentScore} / ${total}</strong></p>
+        <p>Ошибок: <strong>${state.currentWrong}</strong></p>
+        ${perfect ? '<p style="color:#ffd700;">✨ Бонус за идеальный квест: +20 XP!</p>' : ''}
+        <div class="result-xp">+${state.currentScore * 10 + bonus} XP за квест</div>
+        <button onclick="closeQuest()">Закрыть</button>
+        <button onclick="startQuest('${state.currentQuest}')" style="background: linear-gradient(135deg, #ff6b6b, #ffd700); color:#1e3c72;">🔁 Пройти заново</button>
+      </div>
+    `;
+  }
+
+  function resetProgress() {
+    if (!confirm('Ты уверен? Весь прогресс будет удалён.')) return;
+    state = {
+      xp: 0, level: 1, correct: 0, wrong: 0, streak: 0, maxStreak: 0,
+      completedQuests: [], achievements: [],
+      currentQuest: null, currentIndex: 0, currentScore: 0, currentWrong: 0
+    };
+    saveState();
+    updateProgressUI();
+    alert('Прогресс сброшен!');
+  }
+
+  // =============================================
+  // ============ UI NAV ========================
+  // =============================================
+
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const sidebarClose = document.getElementById('sidebarClose');
+
+  function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('show'); }
+  function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+
+  menuToggle.addEventListener('click', openSidebar);
+  sidebarClose.addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', closeSidebar);
+
+  const buttons = document.querySelectorAll('.sidebar button[data-target]');
+  const sections = document.querySelectorAll('.section');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+      closeSidebar();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  const scrollBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('show', window.scrollY > 300);
+  });
+  scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // Поиск
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    const activeSection = document.querySelector('.section.active');
+    if (!activeSection) return;
+    activeSection.querySelectorAll('.card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+  });
+
+  // Закрытие модалки по Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeQuest();
+  });
+
+  // =============================================
+  // ============ INIT ==========================
+  // =============================================
+
+  loadState();
+</script>
+
+</body>
+</html>
