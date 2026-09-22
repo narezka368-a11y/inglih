@@ -3,11 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>English Learning Hub — Reading Mode</title>
+<title>English Learning Hub — Voice Settings</title>
 <style>
-  /* ============================================ */
-  /* ============ THEME VARIABLES =============== */
-  /* ============================================ */
   :root {
     --bg-gradient: linear-gradient(-45deg, #1e3c72, #2a5298, #6a11cb, #2575fc);
     --bg-solid: #0f1440;
@@ -43,7 +40,6 @@
     --dialog-a: rgba(78, 205, 196, 0.25);
     --dialog-b: rgba(255, 215, 0, 0.2);
 
-    /* Reading-specific */
     --reading-bg: rgba(255,255,255,0.06);
     --reading-border: rgba(255,255,255,0.15);
     --word-bg: rgba(255,215,0,0.08);
@@ -126,7 +122,6 @@
     100% { background-position: 0% 50%; }
   }
 
-  /* ==== HEADER ==== */
   header {
     text-align: center;
     padding: 50px 20px 20px;
@@ -157,7 +152,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ==== TOP BUTTONS ==== */
   .top-buttons {
     position: fixed;
     top: 20px;
@@ -188,6 +182,244 @@
     transform: scale(1.1);
     box-shadow: 0 10px 30px var(--shadow-strong);
     background: var(--card-bg-hover);
+  }
+
+  .icon-btn.active {
+    background: linear-gradient(135deg, #ff6b6b, #ffd700);
+    color: #1e3c72;
+    border-color: transparent;
+  }
+
+  /* ==== VOICE SETTINGS PANEL ==== */
+  .voice-panel {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    width: 340px;
+    background: var(--modal-bg);
+    border: 2px solid var(--modal-border);
+    border-radius: 20px;
+    padding: 22px;
+    z-index: 500;
+    box-shadow: 0 20px 60px var(--shadow-strong);
+    backdrop-filter: blur(20px);
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .voice-panel.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+  }
+
+  .voice-panel h3 {
+    color: var(--accent-gold);
+    font-size: 1.15rem;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--modal-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .voice-panel h3 button {
+    background: transparent;
+    border: none;
+    color: var(--accent-red);
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+
+  .voice-field {
+    margin-bottom: 16px;
+  }
+
+  .voice-field label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    margin-bottom: 7px;
+    font-weight: 600;
+  }
+
+  .voice-field label span.value {
+    color: var(--accent-gold);
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .voice-field select,
+  .voice-field input[type="range"] {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 2px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 0.95rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .voice-field select:focus,
+  .voice-field input:focus { border-color: var(--accent-gold); }
+
+  .voice-field select option {
+    background: var(--bg-solid);
+    color: var(--text);
+    padding: 10px;
+  }
+
+  .voice-field input[type="range"] {
+    padding: 0;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--card-border);
+    border: none;
+  }
+
+  .voice-field input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b, #ffd700);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255,215,0,0.5);
+    transition: transform 0.2s ease;
+  }
+
+  .voice-field input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  .voice-field input[type="range"]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b, #ffd700);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 12px rgba(255,215,0,0.5);
+  }
+
+  .voice-presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .voice-presets button {
+    padding: 10px 6px;
+    border-radius: 10px;
+    border: 2px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .voice-presets button:hover {
+    background: var(--card-bg-hover);
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+  }
+
+  .voice-presets button.active {
+    background: linear-gradient(135deg, #ff6b6b, #ffd700);
+    color: #1e3c72;
+    border-color: transparent;
+  }
+
+  .voice-test-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #4ecdc4, #2575fc);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .voice-test-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(78,205,196,0.4);
+  }
+
+  .voice-warning {
+    font-size: 0.78rem;
+    color: var(--accent-red);
+    margin-top: 8px;
+    text-align: center;
+    display: none;
+  }
+
+  /* ==== SPEAKING INDICATOR ==== */
+  .speaking-indicator {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background: linear-gradient(135deg, #4ecdc4, #2575fc);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 10px 30px rgba(78,205,196,0.5);
+    z-index: 2500;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: all 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .speaking-indicator.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .speaking-waves {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+
+  .speaking-waves span {
+    width: 3px;
+    height: 15px;
+    background: #fff;
+    border-radius: 3px;
+    animation: wave 1s ease-in-out infinite;
+  }
+
+  .speaking-waves span:nth-child(2) { animation-delay: 0.15s; }
+  .speaking-waves span:nth-child(3) { animation-delay: 0.3s; }
+  .speaking-waves span:nth-child(4) { animation-delay: 0.45s; }
+
+  @keyframes wave {
+    0%, 100% { height: 8px; }
+    50% { height: 20px; }
   }
 
   /* ==== PROGRESS BAR ==== */
@@ -245,7 +477,6 @@
     text-shadow: 0 0 5px rgba(255,255,255,0.9);
   }
 
-  /* ==== MENU BUTTON ==== */
   .menu-toggle {
     position: fixed;
     top: 20px;
@@ -265,7 +496,6 @@
 
   .menu-toggle:hover { transform: scale(1.1) rotate(90deg); }
 
-  /* ==== SIDEBAR MENU ==== */
   .sidebar {
     position: fixed;
     top: 0;
@@ -354,7 +584,6 @@
 
   .overlay.show { opacity: 1; pointer-events: all; }
 
-  /* ==== SEARCH ==== */
   .search-wrap {
     max-width: 500px;
     margin: 0 auto 30px;
@@ -391,7 +620,6 @@
     font-size: 1.1rem;
   }
 
-  /* ==== MAIN ==== */
   main {
     max-width: 1100px;
     margin: 0 auto;
@@ -418,7 +646,6 @@
     font-style: italic;
   }
 
-  /* ==== SUBSECTIONS ==== */
   .subsection { margin-bottom: 35px; }
 
   .subsection h3 {
@@ -429,7 +656,6 @@
     border-left: 4px solid var(--accent-gold);
   }
 
-  /* ==== VOCAB CARDS ==== */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -445,6 +671,7 @@
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     backdrop-filter: blur(10px);
+    position: relative;
   }
 
   .card:hover {
@@ -458,7 +685,33 @@
   .card .transcription { font-size: 0.9rem; color: var(--accent-cyan); margin-bottom: 8px; font-style: italic; }
   .card .translation { font-size: 1rem; color: var(--text); }
 
-  /* ==== RULE BOXES ==== */
+  .card .speak-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--accent-gold);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+  }
+
+  .card:hover .speak-btn { opacity: 1; }
+
+  .card .speak-btn:hover {
+    background: linear-gradient(135deg, #ff6b6b, #ffd700);
+    color: #1e3c72;
+    transform: scale(1.15) rotate(10deg);
+  }
+
   .rule-box {
     background: var(--panel-bg);
     border-left: 5px solid var(--accent-gold);
@@ -501,7 +754,6 @@
   }
   .tip::before { content: '💡 '; }
 
-  /* ==== TABLE ==== */
   table {
     width: 100%;
     border-collapse: collapse;
@@ -525,10 +777,7 @@
   }
   tr:hover td { background: var(--table-row-hover); }
 
-  /* ============================================ */
-  /* ============ READING MODE ================= */
-  /* ============================================ */
-
+  /* ==== READING MODE ==== */
   .reading-container {
     background: var(--reading-bg);
     border: 1px solid var(--reading-border);
@@ -537,7 +786,6 @@
     margin: 25px 0;
     backdrop-filter: blur(10px);
     box-shadow: 0 10px 40px var(--shadow);
-    position: relative;
   }
 
   .reading-header {
@@ -616,10 +864,12 @@
   .reading-text .word.highlighted {
     background: var(--word-bg);
     border-bottom: 2px dashed var(--accent-gold);
+    animation: wordPulse 0.6s ease;
   }
 
-  .reading-text .punctuation {
-    color: var(--text);
+  @keyframes wordPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); background: var(--word-bg-hover); }
   }
 
   .reading-translation {
@@ -648,7 +898,37 @@
     font-size: 1rem;
   }
 
-  /* ==== TRANSLATION TOOLTIP ==== */
+  .read-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    border: 1px solid var(--card-border);
+    flex-wrap: wrap;
+  }
+
+  .read-progress .progress-mini {
+    flex: 1;
+    min-width: 120px;
+    height: 8px;
+    background: var(--reading-border);
+    border-radius: 50px;
+    overflow: hidden;
+  }
+
+  .read-progress .progress-mini-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ecdc4, #ffd700);
+    border-radius: 50px;
+    width: 0%;
+    transition: width 0.6s ease;
+  }
+
+  /* ==== TOOLTIP ==== */
   .word-tooltip {
     position: fixed;
     background: var(--translation-bg);
@@ -692,37 +972,6 @@
     border-bottom: 0;
   }
 
-  /* ==== READ PROGRESS ==== */
-  .read-progress {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 18px;
-    background: var(--card-bg);
-    border-radius: 12px;
-    margin-top: 15px;
-    font-size: 0.9rem;
-    border: 1px solid var(--card-border);
-    flex-wrap: wrap;
-  }
-
-  .read-progress .progress-mini {
-    flex: 1;
-    min-width: 120px;
-    height: 8px;
-    background: var(--reading-border);
-    border-radius: 50px;
-    overflow: hidden;
-  }
-
-  .read-progress .progress-mini-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4ecdc4, #ffd700);
-    border-radius: 50px;
-    width: 0%;
-    transition: width 0.6s ease;
-  }
-
   /* ==== DIALOG ==== */
   .dialog {
     background: var(--card-bg);
@@ -745,10 +994,7 @@
   .dialog-line .speaker { font-weight: 700; color: var(--accent-gold); margin-right: 6px; }
   .dialog-line .ru { display: block; font-size: 0.88rem; opacity: 0.75; font-style: italic; }
 
-  /* ============================================ */
-  /* ============ QUEST / GAME STYLES =========== */
-  /* ============================================ */
-
+  /* ==== QUEST / GAME ==== */
   .quest-launch { text-align: center; margin: 25px 0; }
 
   .quest-launch button {
@@ -1097,15 +1343,6 @@
     transition: width 0.6s ease;
   }
 
-  .ach-badge {
-    padding: 15px;
-    background: var(--card-bg);
-    border-radius: 12px;
-    text-align: center;
-    opacity: 0.4;
-    transition: all 0.4s ease;
-  }
-
   #scrollTop {
     position: fixed; bottom: 25px; right: 25px;
     width: 50px; height: 50px; border-radius: 50%;
@@ -1138,6 +1375,8 @@
     .reading-container { padding: 20px; }
     .reading-text { font-size: 1.1rem; line-height: 2; }
     .reading-header { flex-direction: column; align-items: flex-start; }
+    .voice-panel { width: calc(100% - 40px); right: 20px; top: 85px; }
+    .speaking-indicator { bottom: 90px; }
   }
 </style>
 </head>
@@ -1147,8 +1386,63 @@
 <div class="overlay" id="overlay"></div>
 
 <div class="top-buttons">
-  <button class="icon-btn" id="ttsBtn" title="Озвучить выделенное слово">🔊</button>
+  <button class="icon-btn" id="voiceBtn" title="Настройки голоса">🎙️</button>
   <button class="icon-btn" id="themeToggle" title="Переключить тему">🌙</button>
+</div>
+
+<!-- ==== VOICE SETTINGS PANEL ==== -->
+<div class="voice-panel" id="voicePanel">
+  <h3>
+    🎙️ Настройки голоса
+    <button onclick="toggleVoicePanel()">✕</button>
+  </h3>
+
+  <div class="voice-field">
+    <label>🇬🇧 Акцент</label>
+    <select id="accentSelect">
+      <option value="en-US">🇺🇸 Американский (US)</option>
+      <option value="en-GB">🇬🇧 Британский (UK)</option>
+      <option value="en-AU">🇦🇺 Австралийский (AU)</option>
+      <option value="en-CA">🇨🇦 Канадский (CA)</option>
+    </select>
+  </div>
+
+  <div class="voice-field">
+    <label>🎤 Голос <span class="value" id="voiceName">Загрузка…</span></label>
+    <select id="voiceSelect"></select>
+  </div>
+
+  <div class="voice-presets">
+    <button data-preset="student" title="Медленно и чётко">🐢 Ученик</button>
+    <button data-preset="normal" class="active" title="Обычный темп">🚶 Обычный</button>
+    <button data-preset="native" title="Быстро, как носитель">🏃 Носитель</button>
+  </div>
+
+  <div class="voice-field">
+    <label>⚡ Скорость <span class="value" id="rateVal">0.9</span></label>
+    <input type="range" id="rateRange" min="0.5" max="1.5" step="0.05" value="0.9">
+  </div>
+
+  <div class="voice-field">
+    <label>🎵 Тон <span class="value" id="pitchVal">1.0</span></label>
+    <input type="range" id="pitchRange" min="0.5" max="1.5" step="0.05" value="1.0">
+  </div>
+
+  <div class="voice-field">
+    <label>🔊 Громкость <span class="value" id="volVal">1.0</span></label>
+    <input type="range" id="volRange" min="0" max="1" step="0.05" value="1.0">
+  </div>
+
+  <button class="voice-test-btn" onclick="testVoice()">🔊 Проверить голос</button>
+  <div class="voice-warning" id="voiceWarning">⚠️ Голоса для этого акцента не найдены</div>
+</div>
+
+<!-- ==== SPEAKING INDICATOR ==== -->
+<div class="speaking-indicator" id="speakingIndicator">
+  <div class="speaking-waves">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <span id="speakingText">Говорю…</span>
 </div>
 
 <aside class="sidebar" id="sidebar">
@@ -1174,7 +1468,7 @@
 
 <header>
   <h1>English Learning Hub</h1>
-  <p>📖 Читай, наводи на слова, слушай произношение!</p>
+  <p>🎙️ Слушай слова приятным голосом — настраивай под себя!</p>
 </header>
 
 <div class="progress-panel">
@@ -1198,30 +1492,42 @@
   <!-- ===== HOME ===== -->
   <section class="section active" id="home">
     <h2>🏠 Добро пожаловать!</h2>
-    <p class="section-desc">Читай тексты, наводи на слова — узнаешь перевод, кликай — услышишь произношение!</p>
+    <p class="section-desc">Читай, слушай, учись с приятным голосом!</p>
 
     <div class="rule-box">
-      <h3>📖 Режим чтения — что это?</h3>
-      <p>В текстах каждое слово кликабельно:</p>
+      <h3>🎙️ Новая система озвучки</h3>
+      <p>Нажми кнопку <strong>🎙️</strong> справа вверху, чтобы открыть настройки голоса:</p>
       <ul>
-        <li>🖱️ <strong>Наведи</strong> на слово → покажется перевод</li>
-        <li>🔊 <strong>Кликни</strong> на слово → услышишь произношение</li>
-        <li>🇷🇺 Кнопка <strong>«Показать перевод»</strong> → весь текст на русском</li>
-        <li>📚 Кнопка <strong>«Словарь»</strong> → все слова из текста с переводом</li>
-        <li>📈 Прогресс чтения сохраняется</li>
+        <li>🌍 <strong>Акцент</strong> — американский, британский, австралийский, канадский</li>
+        <li>🎤 <strong>Выбор голоса</strong> — все доступные голоса для акцента</li>
+        <li>⚡ <strong>Скорость</strong> — от 0.5 (медленно) до 1.5 (быстро)</li>
+        <li>🎵 <strong>Тон</strong> — меняй высоту голоса</li>
+        <li>🔊 <strong>Громкость</strong></li>
+        <li>🎯 <strong>Пресеты</strong>: 🐢 Ученик / 🚶 Обычный / 🏃 Носитель</li>
       </ul>
-      <div class="tip">Начни с раздела <strong>Family Members</strong> — там большой текст о семье Билла с подсветкой каждого слова!</div>
+      <div class="tip">Все настройки сохраняются — в следующий раз не придётся настраивать заново!</div>
     </div>
 
     <div class="rule-box">
-      <h3>🎯 Что ещё на сайте?</h3>
+      <h3>💡 Как слушать слова?</h3>
       <ul>
-        <li>🎮 <strong>Квесты</strong> по каждой теме — зарабатывай XP</li>
-        <li>🏆 <strong>Уровни и достижения</strong></li>
-        <li>🌓 <strong>Тёмная и светлая темы</strong></li>
-        <li>🔍 <strong>Поиск по словам</strong></li>
-        <li>🔊 <strong>Озвучка слов</strong> (кнопка справа вверху)</li>
+        <li>🖱️ <strong>Наведи</strong> на слово в тексте → увидишь перевод</li>
+        <li>🔊 <strong>Кликни</strong> на слово → услышишь его</li>
+        <li>🔊 Нажми <strong>кнопку в углу карточки</strong> → озвучка</li>
+        <li>📖 Кнопка <strong>«Озвучить»</strong> в тексте → весь текст вслух</li>
+        <li>🔊 Кнопка <strong>🎙️ в шапке</strong> с выделенным текстом → произношение</li>
       </ul>
+      <div class="tip">Если голос кажется роботом — попробуй другой акцент или поставь пресет <strong>🐢 Ученик</strong> (медленно и чётко).</div>
+    </div>
+
+    <div class="rule-box">
+      <h3>🎯 Готовые пресеты голоса</h3>
+      <table>
+        <tr><th>Пресет</th><th>Скорость</th><th>Тон</th><th>Для чего</th></tr>
+        <tr><td>🐢 Ученик</td><td>0.7</td><td>1.0</td><td>Для начинающих — медленно и чётко</td></tr>
+        <tr><td>🚶 Обычный</td><td>0.9</td><td>1.0</td><td>Оптимально для ежедневной учёбы</td></tr>
+        <tr><td>🏃 Носитель</td><td>1.15</td><td>1.0</td><td>Как говорят реальные носители</td></tr>
+      </table>
     </div>
   </section>
 
@@ -1230,21 +1536,17 @@
     <h2>👨‍👩‍👧 Family Members</h2>
     <p class="section-desc">Читаем текст о семье Билла Фиппса</p>
 
-    <!-- ==== READING BLOCK ==== -->
     <div class="reading-container">
       <div class="reading-header">
         <h3>📖 Text: Bill's Family</h3>
         <div class="reading-controls">
           <button class="reading-btn" onclick="toggleTranslation('family-trans')">🇷🇺 Показать перевод</button>
-          <button class="reading-btn" onclick="toggleVocab('family-vocab')">📚 Словарь</button>
           <button class="reading-btn" onclick="readAloud('family-text')">🔊 Озвучить</button>
         </div>
       </div>
 
       <div class="reading-text" id="family-text">
-        Hi! I'm <span class="word" data-tr="привет">Hi</span>!
-        I'm <span class="word" data-tr="я есть">I'm</span>
-        <span class="word" data-tr="Билл">Bill</span>
+        Hi! I'm <span class="word" data-tr="Билл">Bill</span>
         <span class="word" data-tr="Фелпс">Phelps</span>
         <span class="word" data-tr="и">and</span>
         I'm <span class="word" data-tr="тринадцать">thirteen</span>
@@ -1286,64 +1588,6 @@
         <span class="word" data-tr="короткими">short</span>,
         <span class="word" data-tr="светлыми">fair</span>
         <span class="word" data-tr="волосами">hair</span>.
-
-        <br><br>
-
-        I <span class="word" data-tr="не имею">haven't got</span>
-        <span class="word" data-tr="брата">a brother</span>
-        <span class="word" data-tr="но">but</span>
-        I've <span class="word" data-tr="имею">got</span>
-        <span class="word" data-tr="две">two</span>
-        <span class="word" data-tr="сестры">sisters</span>.
-        <span class="word" data-tr="Они">They're</span>
-        <span class="word" data-tr="близнецы">twins</span>.
-        <span class="word" data-tr="Их">Their</span>
-        <span class="word" data-tr="имена">names</span>
-        <span class="word" data-tr="есть">are</span>
-        <span class="word" data-tr="Ким">Kim</span>
-        <span class="word" data-tr="и">and</span>
-        <span class="word" data-tr="Кейт">Kate</span>
-        <span class="word" data-tr="и">and</span>
-        <span class="word" data-tr="они">they're</span>
-        <span class="word" data-tr="восемь">eight</span>
-        <span class="word" data-tr="лет">years</span>
-        <span class="word" data-tr="старые">old</span>.
-
-        <br><br>
-
-        <span class="word" data-tr="Майк">Mike</span>
-        <span class="word" data-tr="есть">is</span>
-        <span class="word" data-tr="моего">my</span>
-        <span class="word" data-tr="отца">father's</span>
-        <span class="word" data-tr="брат">brother</span>.
-        <span class="word" data-tr="Он">He's</span>
-        <span class="word" data-tr="врач">a doctor</span>
-        <span class="word" data-tr="и">and</span>
-        <span class="word" data-tr="он">he's</span>
-        <span class="word" data-tr="женат">married</span>
-        <span class="word" data-tr="на">to</span>
-        <span class="word" data-tr="Джанет">Janet</span>.
-        <span class="word" data-tr="Они имеют">They've got</span>
-        <span class="word" data-tr="двух">two</span>
-        <span class="word" data-tr="детей">children</span>,
-        <span class="word" data-tr="Джонни">Johnny</span>
-        <span class="word" data-tr="и">and</span>
-        <span class="word" data-tr="Джилл">Gill</span>.
-
-        <br><br>
-
-        <span class="word" data-tr="Том">Tom</span>
-        <span class="word" data-tr="и">and</span>
-        <span class="word" data-tr="Бет">Beth</span>
-        <span class="word" data-tr="есть">are</span>
-        <span class="word" data-tr="мои">my</span>
-        <span class="word" data-tr="бабушка и дедушка">grandparents</span>.
-        <span class="word" data-tr="Они">They</span>
-        <span class="word" data-tr="есть">are</span>
-        <span class="word" data-tr="в">in</span>
-        <span class="word" data-tr="их">their</span>
-        <span class="word" data-tr="поздних">late</span>
-        <span class="word" data-tr="шестидесяти">sixties</span>.
       </div>
 
       <div class="reading-translation" id="family-trans">
@@ -1352,48 +1596,25 @@
         <br><br>
 
         Моих родителей зовут Сью и Сэм. Мой папа невысокий, с тёмными волосами. Моя мама высокая, с короткими светлыми волосами.
-
-        <br><br>
-
-        У меня нет брата, но есть две сестры. Они близнецы. Их зовут Ким и Кейт, им восемь лет.
-
-        <br><br>
-
-        Майк — брат моего отца. Он врач, и он женат на Джанет. У них двое детей: Джонни и Джилл.
-
-        <br><br>
-
-        Том и Бет — мои бабушка и дедушка. Им около семидесяти лет.
-      </div>
-
-      <div class="read-progress">
-        <span>📖 Прочитано слов:</span>
-        <div class="progress-mini"><div class="progress-mini-fill" id="family-read-progress"></div></div>
-        <span id="family-read-count">0 / 100</span>
       </div>
     </div>
 
-    <!-- ==== VOCAB ==== -->
-    <div class="subsection" id="family-vocab" style="display:none;">
-      <h3>📚 Словарь по теме</h3>
+    <div class="subsection">
+      <h3>📚 Словарь с озвучкой (нажми 🔊)</h3>
       <div class="grid">
-        <div class="card"><div class="word">family</div><div class="transcription">/ˈfæmɪli/</div><div class="translation">семья</div></div>
-        <div class="card"><div class="word">mother / mum</div><div class="transcription">/ˈmʌðə/</div><div class="translation">мама</div></div>
-        <div class="card"><div class="word">father / dad</div><div class="transcription">/ˈfɑːðə/</div><div class="translation">папа</div></div>
-        <div class="card"><div class="word">parents</div><div class="transcription">/ˈpeərənts/</div><div class="translation">родители</div></div>
-        <div class="card"><div class="word">grandmother</div><div class="transcription">/ˈɡrænˌmʌðə/</div><div class="translation">бабушка</div></div>
-        <div class="card"><div class="word">grandfather</div><div class="transcription">/ˈɡrænˌfɑːðə/</div><div class="translation">дедушка</div></div>
-        <div class="card"><div class="word">sister</div><div class="transcription">/ˈsɪstə/</div><div class="translation">сестра</div></div>
-        <div class="card"><div class="word">brother</div><div class="transcription">/ˈbrʌðə/</div><div class="translation">брат</div></div>
-        <div class="card"><div class="word">aunt</div><div class="transcription">/ɑːnt/</div><div class="translation">тётя</div></div>
-        <div class="card"><div class="word">uncle</div><div class="transcription">/ˈʌŋkl/</div><div class="translation">дядя</div></div>
-        <div class="card"><div class="word">cousin</div><div class="transcription">/ˈkʌzn/</div><div class="translation">двоюродный</div></div>
-        <div class="card"><div class="word">children</div><div class="transcription">/ˈtʃɪldrən/</div><div class="translation">дети</div></div>
+        <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('family')">🔊</button><div class="word">family</div><div class="transcription">/ˈfæmɪli/</div><div class="translation">семья</div></div>
+        <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('mother')">🔊</button><div class="word">mother</div><div class="transcription">/ˈmʌðə/</div><div class="translation">мама</div></div>
+        <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('father')">🔊</button><div class="word">father</div><div class="transcription">/ˈfɑːðə/</div><div class="translation">папа</div></div>
+        <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('sister')">🔊</button><div class="word">sister</div><div class="transcription">/ˈsɪstə/</div><div class="translation">сестра</div></div>
+        <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('brother')">🔊</button><div class="word">brother</div><div class="transcription">/ˈbrʌðə/</div><div class="translation">брат</div></div>
+        <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('grandmother')">🔊</button><div class="word">grandmother</div><div class="transcription">/ˈɡrænˌmʌðə/</div><div class="translation">бабушка</div></div>
+        <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('grandfather')">🔊</button><div class="word">grandfather</div><div class="transcription">/ˈɡrænˌfɑːðə/</div><div class="translation">дедушка</div></div>
+        <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('daughter')">🔊</button><div class="word">daughter</div><div class="transcription">/ˈdɔːtə/</div><div class="translation">дочь</div></div>
       </div>
     </div>
 
     <div class="quest-launch">
-      <button onclick="startQuest('family')">🎮 Начать квест: Family</button>
+      <button onclick="startQuest('family')">🎮 Начать квест</button>
     </div>
   </section>
 
@@ -1441,20 +1662,6 @@
         <span class="word" data-tr="светлые">is fair</span>
         <span class="word" data-tr="и">and</span>
         <span class="word" data-tr="волнистые">wavy</span>.
-
-        <br><br>
-
-        <span class="word" data-tr="Марк">Mark</span>
-        <span class="word" data-tr="есть">is</span>
-        <span class="word" data-tr="молодой">young</span>.
-        <span class="word" data-tr="Он">He</span>
-        <span class="word" data-tr="есть">is</span>
-        <span class="word" data-tr="высокий">tall</span>
-        <span class="word" data-tr="и">and</span>
-        <span class="word" data-tr="стройный">slim</span>.
-        <span class="word" data-tr="У него">He has</span>
-        <span class="word" data-tr="тёмные">dark</span>
-        <span class="word" data-tr="волосы">hair</span>.
       </div>
 
       <div class="reading-translation" id="app-trans">
@@ -1463,15 +1670,11 @@
         <br><br>
 
         Билл средних лет. Он невысокий и полный. Его волосы светлые и волнистые.
-
-        <br><br>
-
-        Марк молодой. Он высокий и стройный. У него тёмные волосы.
       </div>
     </div>
 
     <div class="quest-launch">
-      <button onclick="startQuest('appearance')">🎮 Начать квест: Appearance</button>
+      <button onclick="startQuest('appearance')">🎮 Начать квест</button>
     </div>
   </section>
 
@@ -1482,18 +1685,17 @@
 
     <div class="rule-box">
       <h3>📌 Формула</h3>
-      <p><strong>Существительное + 's</strong> — для людей и животных</p>
       <div class="example">
-        <strong>Johnny's son</strong> — сын Джонни<br>
         <strong>Bill's father</strong> — папа Билла
+        <button class="reading-btn" style="margin-left:10px; padding:4px 10px;" onclick="speak('Bill father')">🔊</button>
       </div>
     </div>
 
     <div class="rule-box">
       <h3>✅ Множественное число — + '</h3>
       <div class="example">
-        <strong>Bill is the twins' brother.</strong> — Билл — брат близнецов.<br>
-        <strong>My parents' names are Sue and Sam.</strong> — Имена моих родителей — Сью и Сэм.
+        <strong>My parents' names</strong> — имена родителей
+        <button class="reading-btn" style="margin-left:10px; padding:4px 10px;" onclick="speak('My parents names')">🔊</button>
       </div>
     </div>
 
@@ -1510,13 +1712,13 @@
     <div class="rule-box">
       <h3>📊 Таблица</h3>
       <table>
-        <tr><th>Местоимение</th><th>+ сущ.</th><th>без сущ.</th><th>Перевод</th></tr>
-        <tr><td>I</td><td>my</td><td>mine</td><td>мой</td></tr>
-        <tr><td>you</td><td>your</td><td>yours</td><td>твой</td></tr>
-        <tr><td>he</td><td>his</td><td>his</td><td>его</td></tr>
-        <tr><td>she</td><td>her</td><td>hers</td><td>её</td></tr>
-        <tr><td>we</td><td>our</td><td>ours</td><td>наш</td></tr>
-        <tr><td>they</td><td>their</td><td>theirs</td><td>их</td></tr>
+        <tr><th>Местоимение</th><th>+ сущ.</th><th>без сущ.</th><th>Перевод</th><th></th></tr>
+        <tr><td>I</td><td>my</td><td>mine</td><td>мой</td><td><button class="reading-btn" style="padding:4px 8px;" onclick="speak('my mine')">🔊</button></td></tr>
+        <tr><td>you</td><td>your</td><td>yours</td><td>твой</td><td><button class="reading-btn" style="padding:4px 8px;" onclick="speak('your yours')">🔊</button></td></tr>
+        <tr><td>he</td><td>his</td><td>his</td><td>его</td><td><button class="reading-btn" style="padding:4px 8px;" onclick="speak('his his')">🔊</button></td></tr>
+        <tr><td>she</td><td>her</td><td>hers</td><td>её</td><td><button class="reading-btn" style="padding:4px 8px;" onclick="speak('her hers')">🔊</button></td></tr>
+        <tr><td>we</td><td>our</td><td>ours</td><td>наш</td><td><button class="reading-btn" style="padding:4px 8px;" onclick="speak('our ours')">🔊</button></td></tr>
+        <tr><td>they</td><td>their</td><td>theirs</td><td>их</td><td><button class="reading-btn" style="padding:4px 8px;" onclick="speak('their theirs')">🔊</button></td></tr>
       </table>
     </div>
 
@@ -1531,12 +1733,12 @@
     <p class="section-desc">Виды документов</p>
 
     <div class="grid">
-      <div class="card"><div class="word">identity card</div><div class="transcription">/aɪˈdentəti kɑːd/</div><div class="translation">удостоверение</div></div>
-      <div class="card"><div class="word">driving licence</div><div class="transcription">/ˈdraɪvɪŋ/</div><div class="translation">права</div></div>
-      <div class="card"><div class="word">credit card</div><div class="transcription">/ˈkredɪt/</div><div class="translation">кредитная карта</div></div>
-      <div class="card"><div class="word">full name</div><div class="transcription">/fʊl neɪm/</div><div class="translation">полное имя</div></div>
-      <div class="card"><div class="word">date of birth</div><div class="transcription">/deɪt əv bɜːθ/</div><div class="translation">дата рождения</div></div>
-      <div class="card"><div class="word">expiry date</div><div class="transcription">/ɪkˈspaɪəri/</div><div class="translation">срок действия</div></div>
+      <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('identity card')">🔊</button><div class="word">identity card</div><div class="transcription">/aɪˈdentəti kɑːd/</div><div class="translation">удостоверение</div></div>
+      <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('driving licence')">🔊</button><div class="word">driving licence</div><div class="transcription">/ˈdraɪvɪŋ/</div><div class="translation">права</div></div>
+      <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('credit card')">🔊</button><div class="word">credit card</div><div class="transcription">/ˈkredɪt/</div><div class="translation">кредитная карта</div></div>
+      <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('full name')">🔊</button><div class="word">full name</div><div class="transcription">/fʊl neɪm/</div><div class="translation">полное имя</div></div>
+      <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('date of birth')">🔊</button><div class="word">date of birth</div><div class="transcription">/deɪt əv bɜːθ/</div><div class="translation">дата рождения</div></div>
+      <div class="card"><button class="speak-btn" onclick="event.stopPropagation(); speak('expiry date')">🔊</button><div class="word">expiry date</div><div class="transcription">/ɪkˈspaɪəri/</div><div class="translation">срок действия</div></div>
     </div>
 
     <div class="quest-launch">
@@ -1568,34 +1770,10 @@
 
         <br><br>
 
-        <span class="word" data-tr="Как">How</span>
-        <span class="word" data-tr="ты пишешь">do you spell</span>
-        <span class="word" data-tr="это">it</span>?
-        — D-I-A-N-A,
-        A-C-T-O-N.
-
-        <br><br>
-
         <span class="word" data-tr="Сколько">How</span>
         <span class="word" data-tr="лет">old</span>
         <span class="word" data-tr="тебе">are you</span>?
         — I am <span class="word" data-tr="девятнадцать">nineteen</span>.
-
-        <br><br>
-
-        <span class="word" data-tr="Какой">What</span>
-        <span class="word" data-tr="национальности">nationality</span>
-        <span class="word" data-tr="ты">are you</span>?
-        — I am <span class="word" data-tr="американка">American</span>.
-
-        <br><br>
-
-        <span class="word" data-tr="Откуда">Where</span>
-        <span class="word" data-tr="ты">are you</span>
-        <span class="word" data-tr="из">from</span>?
-        — I'm from <span class="word" data-tr="США">the USA</span>,
-        but I <span class="word" data-tr="живу">live</span>
-        in <span class="word" data-tr="Лондоне">London</span>.
       </div>
 
       <div class="reading-translation" id="pi-trans">
@@ -1603,19 +1781,7 @@
 
         <br><br>
 
-        Как это пишется? — Д-И-А-Н-А, А-К-Т-О-Н.
-
-        <br><br>
-
         Сколько тебе лет? — Мне девятнадцать.
-
-        <br><br>
-
-        Какой ты национальности? — Я американка.
-
-        <br><br>
-
-        Откуда ты? — Я из США, но живу в Лондоне.
       </div>
     </div>
 
@@ -1651,35 +1817,7 @@
         <strong>Jane:</strong>
         <span class="word" data-tr="Я хотела бы">I would like to</span>
         <span class="word" data-tr="записаться">join</span>
-        <span class="word" data-tr="книжный клуб">the book club</span>,
-        <span class="word" data-tr="пожалуйста">please</span>.
-
-        <br>
-
-        <strong>Penny:</strong>
-        <span class="word" data-tr="Конечно">Of course</span>.
-        <span class="word" data-tr="Как">What's</span>
-        <span class="word" data-tr="твоё">your</span>
-        <span class="word" data-tr="имя">name</span>?
-
-        <br>
-
-        <strong>Jane:</strong>
-        <span class="word" data-tr="Джейн">Jane</span>
-        <span class="word" data-tr="Харрис">Harris</span>.
-
-        <br>
-
-        <strong>Penny:</strong>
-        <span class="word" data-tr="Хорошо">Right</span>,
-        <span class="word" data-tr="как">how do you</span>
-        <span class="word" data-tr="пишешь">spell</span>
-        <span class="word" data-tr="это">that</span>?
-
-        <br>
-
-        <strong>Jane:</strong>
-        J-A-N-E, H-A-double R-I-S.
+        <span class="word" data-tr="книжный клуб">the book club</span>.
       </div>
 
       <div class="reading-translation" id="dlg-trans">
@@ -1687,23 +1825,7 @@
 
         <br>
 
-        <strong>Джейн:</strong> Я хотела бы записаться в книжный клуб, пожалуйста.
-
-        <br>
-
-        <strong>Пенни:</strong> Конечно. Как тебя зовут?
-
-        <br>
-
-        <strong>Джейн:</strong> Джейн Харрис.
-
-        <br>
-
-        <strong>Пенни:</strong> Хорошо, как это пишется?
-
-        <br>
-
-        <strong>Джейн:</strong> Д-Ж-Е-Й-Н, Х-А-двойная Р-И-С.
+        <strong>Джейн:</strong> Я хотела бы записаться в книжный клуб.
       </div>
     </div>
 
@@ -1715,21 +1837,13 @@
   <!-- ===== COMPARE ===== -->
   <section class="section" id="compare">
     <h2>⚖️ Comparing People</h2>
-    <p class="section-desc">Сравнения as…as и not as…as</p>
+    <p class="section-desc">Сравнения as…as</p>
 
     <div class="rule-box">
       <h3>📌 «Такой же… как»</h3>
-      <p><strong>as + прилагательное + as</strong></p>
       <div class="example">
-        <strong>Bill's hair is as short as Tony's.</strong> — Волосы Билла такие же короткие, как у Тони.
-      </div>
-    </div>
-
-    <div class="rule-box">
-      <h3>📌 «Не такой… как»</h3>
-      <p><strong>not as / so + прилагательное + as</strong></p>
-      <div class="example">
-        <strong>Mark is not as tall as Tony.</strong> — Марк не такой высокий, как Тони.
+        <strong>Bill's hair is as short as Tony's.</strong>
+        <button class="reading-btn" style="margin-left:10px; padding:4px 10px;" onclick="speak('Bill hair is as short as Tony')">🔊</button>
       </div>
     </div>
 
@@ -1740,7 +1854,7 @@
 
   <!-- ===== PROGRESS ===== -->
   <section class="section" id="progress">
-    <h2>🏆 Прогресс и достижения</h2>
+    <h2>🏆 Прогресс</h2>
     <p class="section-desc">Твоя статистика</p>
 
     <div class="rule-box">
@@ -1750,7 +1864,7 @@
         <tr><td>⭐ Уровень</td><td id="statLevel">1</td></tr>
         <tr><td>💎 Всего XP</td><td id="statXP">0</td></tr>
         <tr><td>🏅 Титул</td><td id="statRank">🥉 Новичок</td></tr>
-        <tr><td>✅ Квестов пройдено</td><td id="statQuests">0 / 8</td></tr>
+        <tr><td>✅ Квестов</td><td id="statQuests">0 / 8</td></tr>
         <tr><td>🎯 Правильных</td><td id="statCorrect">0</td></tr>
         <tr><td>❌ Ошибок</td><td id="statWrong">0</td></tr>
       </table>
@@ -1765,10 +1879,8 @@
 
 <button id="scrollTop">↑</button>
 
-<!-- ===== TOOLTIP ===== -->
 <div class="word-tooltip" id="wordTooltip"></div>
 
-<!-- ===== QUEST MODAL ===== -->
 <div class="quest-modal" id="questModal">
   <div class="quest-window">
     <div class="quest-header">
@@ -1790,10 +1902,270 @@
 </div>
 
 <footer>
-  💙 English Learning Hub — читай, слушай, учись!
+  💙 English Learning Hub — учись с приятным голосом!
 </footer>
 
 <script>
+  // =============================================
+  // ============ VOICE SETTINGS =================
+  // =============================================
+
+  let voices = [];
+  let voiceSettings = {
+    voiceURI: null,
+    accent: 'en-US',
+    rate: 0.9,
+    pitch: 1.0,
+    volume: 1.0,
+    preset: 'normal'
+  };
+
+  const accentSelect = document.getElementById('accentSelect');
+  const voiceSelect = document.getElementById('voiceSelect');
+  const voiceName = document.getElementById('voiceName');
+  const rateRange = document.getElementById('rateRange');
+  const pitchRange = document.getElementById('pitchRange');
+  const volRange = document.getElementById('volRange');
+  const rateVal = document.getElementById('rateVal');
+  const pitchVal = document.getElementById('pitchVal');
+  const volVal = document.getElementById('volVal');
+  const voiceWarning = document.getElementById('voiceWarning');
+
+  // Загрузка голосов
+  function loadVoices() {
+    voices = speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      voiceWarning.style.display = 'block';
+      voiceWarning.textContent = '⚠️ Голоса ещё загружаются…';
+      return;
+    }
+    voiceWarning.style.display = 'none';
+    populateVoices();
+  }
+
+  // Определить "красивые" голоса (приоритет приятным)
+  function scoreVoice(v) {
+    let score = 0;
+    const name = (v.name || '').toLowerCase();
+    // Google голоса — обычно самые приятные
+    if (name.includes('google')) score += 100;
+    if (name.includes('natural')) score += 90;
+    if (name.includes('neural')) score += 85;
+    if (name.includes('premium')) score += 80;
+    if (name.includes('enhanced')) score += 70;
+    if (name.includes('samantha')) score += 60;
+    if (name.includes('aria')) score += 55;
+    if (name.includes('jenny')) score += 55;
+    if (name.includes('guy')) score += 50;
+    if (name.includes('mark')) score += 45;
+    if (name.includes('zira')) score += 40;
+    if (name.includes('david')) score += 40;
+    if (name.includes('microsoft')) score += 20;
+    if (v.lang && v.lang.toLowerCase().startsWith(voiceSettings.accent.toLowerCase())) score += 30;
+    return score;
+  }
+
+  function populateVoices() {
+    const accentPrefix = voiceSettings.accent.toLowerCase().split('-')[0];
+    const accentFull = voiceSettings.accent.toLowerCase();
+
+    let available = voices.filter(v => {
+      const lang = v.lang.toLowerCase();
+      return lang === accentFull || lang.startsWith(accentFull + '-');
+    });
+
+    // Если нет точного совпадения — берём все с тем же языком (en)
+    if (available.length === 0) {
+      available = voices.filter(v => v.lang.toLowerCase().startsWith(accentPrefix));
+    }
+
+    voiceSelect.innerHTML = '';
+
+    if (available.length === 0) {
+      voiceWarning.style.display = 'block';
+      voiceWarning.textContent = '⚠️ Для этого акцента нет голосов. Установи дополнительные в системе.';
+      voiceName.textContent = '—';
+      return;
+    }
+
+    voiceWarning.style.display = 'none';
+
+    // Сортируем по "красоте"
+    available.sort((a, b) => scoreVoice(b) - scoreVoice(a));
+
+    available.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.voiceURI;
+      opt.textContent = `${v.name} (${v.lang})`;
+      if (v.voiceURI === voiceSettings.voiceURI) opt.selected = true;
+      voiceSelect.appendChild(opt);
+    });
+
+    // Если сохранённый голос не найден — выбираем лучший
+    const savedVoice = available.find(v => v.voiceURI === voiceSettings.voiceURI);
+    if (!savedVoice) {
+      voiceSettings.voiceURI = available[0].voiceURI;
+      voiceSelect.value = available[0].voiceURI;
+    }
+
+    voiceName.textContent = available[0].name.split(' ').slice(0, 2).join(' ');
+  }
+
+  function loadVoiceSettings() {
+    const saved = localStorage.getItem('englishHubVoice');
+    if (saved) {
+      try { voiceSettings = { ...voiceSettings, ...JSON.parse(saved) }; } catch(e) {}
+    }
+    accentSelect.value = voiceSettings.accent;
+    rateRange.value = voiceSettings.rate;
+    pitchRange.value = voiceSettings.pitch;
+    volRange.value = voiceSettings.volume;
+    rateVal.textContent = voiceSettings.rate;
+    pitchVal.textContent = voiceSettings.pitch;
+    volVal.textContent = voiceSettings.volume;
+
+    document.querySelectorAll('.voice-presets button').forEach(b => {
+      b.classList.toggle('active', b.dataset.preset === voiceSettings.preset);
+    });
+  }
+
+  function saveVoiceSettings() {
+    localStorage.setItem('englishHubVoice', JSON.stringify(voiceSettings));
+  }
+
+  function toggleVoicePanel() {
+    const panel = document.getElementById('voicePanel');
+    const btn = document.getElementById('voiceBtn');
+    panel.classList.toggle('show');
+    btn.classList.toggle('active');
+    if (panel.classList.contains('show')) loadVoices();
+  }
+
+  document.getElementById('voiceBtn').addEventListener('click', toggleVoicePanel);
+
+  accentSelect.addEventListener('change', () => {
+    voiceSettings.accent = accentSelect.value;
+    voiceSettings.voiceURI = null;
+    saveVoiceSettings();
+    populateVoices();
+    testVoice();
+  });
+
+  voiceSelect.addEventListener('change', () => {
+    voiceSettings.voiceURI = voiceSelect.value;
+    const v = voices.find(x => x.voiceURI === voiceSettings.voiceURI);
+    if (v) voiceName.textContent = v.name.split(' ').slice(0, 2).join(' ');
+    saveVoiceSettings();
+    testVoice();
+  });
+
+  rateRange.addEventListener('input', () => {
+    voiceSettings.rate = parseFloat(rateRange.value);
+    rateVal.textContent = voiceSettings.rate.toFixed(2).replace(/0$/, '');
+    saveVoiceSettings();
+  });
+
+  pitchRange.addEventListener('input', () => {
+    voiceSettings.pitch = parseFloat(pitchRange.value);
+    pitchVal.textContent = voiceSettings.pitch.toFixed(2).replace(/0$/, '');
+    saveVoiceSettings();
+  });
+
+  volRange.addEventListener('input', () => {
+    voiceSettings.volume = parseFloat(volRange.value);
+    volVal.textContent = voiceSettings.volume.toFixed(2).replace(/0$/, '');
+    saveVoiceSettings();
+  });
+
+  // Пресеты
+  document.querySelectorAll('.voice-presets button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.voice-presets button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      voiceSettings.preset = btn.dataset.preset;
+
+      if (voiceSettings.preset === 'student') {
+        voiceSettings.rate = 0.7;
+        voiceSettings.pitch = 1.0;
+        voiceSettings.volume = 1.0;
+      } else if (voiceSettings.preset === 'normal') {
+        voiceSettings.rate = 0.9;
+        voiceSettings.pitch = 1.0;
+        voiceSettings.volume = 1.0;
+      } else if (voiceSettings.preset === 'native') {
+        voiceSettings.rate = 1.15;
+        voiceSettings.pitch = 1.0;
+        voiceSettings.volume = 1.0;
+      }
+
+      rateRange.value = voiceSettings.rate;
+      pitchRange.value = voiceSettings.pitch;
+      volRange.value = voiceSettings.volume;
+      rateVal.textContent = voiceSettings.rate;
+      pitchVal.textContent = voiceSettings.pitch;
+      volVal.textContent = voiceSettings.volume;
+      saveVoiceSettings();
+      testVoice();
+    });
+  });
+
+  // Улучшенная озвучка
+  let speakingTimeout;
+
+  function showSpeaking(text) {
+    const indicator = document.getElementById('speakingIndicator');
+    document.getElementById('speakingText').textContent = text;
+    indicator.classList.add('show');
+    clearTimeout(speakingTimeout);
+  }
+
+  function hideSpeaking() {
+    const indicator = document.getElementById('speakingIndicator');
+    speakingTimeout = setTimeout(() => {
+      indicator.classList.remove('show');
+    }, 300);
+  }
+
+  function speak(text, options = {}) {
+    if (!('speechSynthesis' in window)) {
+      alert('Твой браузер не поддерживает озвучку 😢');
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = voiceSettings.accent;
+    utt.rate = options.rate ?? voiceSettings.rate;
+    utt.pitch = options.pitch ?? voiceSettings.pitch;
+    utt.volume = voiceSettings.volume;
+
+    // Найти выбранный голос
+    const voice = voices.find(v => v.voiceURI === voiceSettings.voiceURI);
+    if (voice) utt.voice = voice;
+
+    utt.onstart = () => showSpeaking('🔊 ' + text.substring(0, 30) + (text.length > 30 ? '…' : ''));
+    utt.onend = hideSpeaking;
+    utt.onerror = hideSpeaking;
+
+    window.speechSynthesis.speak(utt);
+  }
+
+  function testVoice() {
+    speak('Hello! Nice to meet you. Welcome to English Learning Hub!');
+  }
+
+  // Загрузка голосов (в разных браузерах по-разному)
+  if ('speechSynthesis' in window) {
+    loadVoices();
+    speechSynthesis.onvoiceschanged = loadVoices;
+    // Ещё раз через секунду на случай медленной загрузки
+    setTimeout(loadVoices, 500);
+    setTimeout(loadVoices, 1500);
+  }
+
+  loadVoiceSettings();
+
   // =============================================
   // ============ THEME SWITCHING ================
   // =============================================
@@ -1833,11 +2205,9 @@
   // =============================================
 
   const tooltip = document.getElementById('wordTooltip');
-  let readWords = new Set();
 
-  // Наведение на слово
   document.querySelectorAll('.reading-text .word').forEach(word => {
-    word.addEventListener('mouseenter', e => {
+    word.addEventListener('mouseenter', () => {
       const tr = word.getAttribute('data-tr');
       if (!tr) return;
       tooltip.innerHTML = `${word.textContent}<span class="tr">${tr}</span>`;
@@ -1852,40 +2222,13 @@
       tooltip.classList.remove('show');
     });
 
-    // Клик — озвучка + отметить как прочитанное
     word.addEventListener('click', () => {
-      const text = word.textContent;
-      speak(text);
-
-      // Подсветка
+      speak(word.textContent);
       word.classList.add('highlighted');
       setTimeout(() => word.classList.remove('highlighted'), 800);
-
-      // Прогресс чтения
-      const sectionId = word.closest('.section').id;
-      const key = sectionId + ':' + Math.random();
-      if (!word.dataset.read) {
-        word.dataset.read = '1';
-        readWords.add(key);
-        updateReadProgress(sectionId);
-      }
     });
   });
 
-  // Озвучка
-  function speak(text) {
-    if (!('speechSynthesis' in window)) {
-      alert('Твой браузер не поддерживает озвучку 😢');
-      return;
-    }
-    window.speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.lang = 'en-US';
-    utt.rate = 0.85;
-    window.speechSynthesis.speak(utt);
-  }
-
-  // Озвучить весь текст
   function readAloud(id) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -1893,7 +2236,6 @@
     speak(text);
   }
 
-  // Показать/скрыть перевод
   function toggleTranslation(id) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -1908,44 +2250,6 @@
     }
   }
 
-  // Показать/скрыть словарь
-  function toggleVocab(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (el.style.display === 'none') {
-      el.style.display = 'block';
-      event.target.classList.add('active');
-      event.target.textContent = '📚 Скрыть словарь';
-    } else {
-      el.style.display = 'none';
-      event.target.classList.remove('active');
-      event.target.textContent = '📚 Словарь';
-    }
-  }
-
-  // Прогресс чтения
-  function updateReadProgress(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (!section) return;
-    const total = section.querySelectorAll('.reading-text .word').length;
-    if (total === 0) return;
-    const read = section.querySelectorAll('.reading-text .word[data-read]').length;
-    const fill = document.getElementById(sectionId + '-read-progress');
-    const count = document.getElementById(sectionId + '-read-count');
-    if (fill) fill.style.width = (read / total * 100) + '%';
-    if (count) count.textContent = `${read} / ${total}`;
-  }
-
-  // Кнопка 🔊 в шапке — озвучить выделенный текст
-  document.getElementById('ttsBtn').addEventListener('click', () => {
-    const sel = window.getSelection().toString().trim();
-    if (sel) {
-      speak(sel);
-    } else {
-      alert('Выдели текст мышкой — и я его озвучу! 🔊');
-    }
-  });
-
   // =============================================
   // ============ QUEST DATABASE =================
   // =============================================
@@ -1957,26 +2261,23 @@
       { type:'translate', q:'Переведи на английский:', word: 'сестра', correct: ['sister'] },
       { type:'test', q:'Что означает "grandmother"?', options:['мама', 'тётя', 'бабушка', 'сестра'], correct: 2 },
       { type:'puzzle', q:'Собери предложение:', words: ['My', 'family', 'is', 'big'], correct: 'My family is big' },
-      { type:'translate', q:'Переведи на английский:', word: 'родители', correct: ['parents'] },
-      { type:'test', q:'Как переводится "cousin"?', options:['двоюродный', 'дядя', 'племянник', 'муж'], correct: 0 },
-      { type:'translate', q:'Переведи на русский:', word: 'daughter', correct: ['дочь'] }
+      { type:'translate', q:'Переведи:', word: 'родители', correct: ['parents'] }
     ],
     appearance: [
       { type:'test', q:'Что означает "tall"?', options:['низкий', 'высокий', 'толстый', 'стройный'], correct: 1 },
-      { type:'test', q:'Как переводится "wavy hair"?', options:['прямые', 'волнистые', 'короткие', 'тёмные'], correct: 1 },
-      { type:'translate', q:'Переведи на английский:', word: 'глаза', correct: ['eyes'] },
-      { type:'test', q:'Как переводится "fair hair"?', options:['тёмные', 'светлые', 'седые', 'длинные'], correct: 1 },
-      { type:'translate', q:'Переведи на русский:', word: 'slim', correct: ['стройный'] },
-      { type:'test', q:'"middle-aged" — это…', options:['молодой', 'старый', 'средних лет', 'пожилой'], correct: 2 },
-      { type:'puzzle', q:'Собери предложение:', words: ['My', 'mum', 'is', 'tall'], correct: 'My mum is tall' }
+      { type:'test', q:'"wavy hair" — это…', options:['прямые', 'волнистые', 'короткие', 'тёмные'], correct: 1 },
+      { type:'translate', q:'Переведи:', word: 'глаза', correct: ['eyes'] },
+      { type:'test', q:'"fair hair" — это…', options:['тёмные', 'светлые', 'седые', 'длинные'], correct: 1 },
+      { type:'translate', q:'Переведи:', word: 'стройный', correct: ['slim'] },
+      { type:'test', q:'"middle-aged" — это…', options:['молодой', 'старый', 'средних лет', 'пожилой'], correct: 2 }
     ],
     possessive: [
       { type:'test', q:'Как правильно?', options:["Bill father", "Bill's father", "Bills father", "Bills' father"], correct: 1 },
-      { type:'test', q:'Множественное число (twins):', options:["twins's brother", "twins' brother", "twins brother", "twins's"], correct: 1 },
-      { type:'translate', q:'Переведи (со \'s):', word: 'папа Билла', correct: ["bill's father", "bill's dad"] },
-      { type:'test', q:'Как правильно для родителей?', options:["parents's names", "parents' names", "parent names", "parents names'"], correct: 1 },
+      { type:'test', q:'Мн. число (twins):', options:["twins's brother", "twins' brother", "twins brother", "twins's"], correct: 1 },
+      { type:'translate', q:'Переведи со \'s:', word: 'папа Билла', correct: ["bill's father", "bill's dad"] },
+      { type:'test', q:'Родители:', options:["parents's names", "parents' names", "parent names", "parents names'"], correct: 1 },
       { type:'test', q:'Папа Джонни и Джилл:', options:["Johnny's and Gill's dad", "Johnny and Gill's dad", "Johnny's and Gill dad", "Johnny and Gills dad"], correct: 1 },
-      { type:'puzzle', q:'Собери предложение:', words: ['This', 'is', "Bill's", 'father'], correct: "This is Bill's father" }
+      { type:'puzzle', q:'Собери:', words: ['This', 'is', "Bill's", 'father'], correct: "This is Bill's father" }
     ],
     pronouns: [
       { type:'test', q:'I → …', options:['my / mine', 'me / mine', 'my / my', 'mine / my'], correct: 0 },
@@ -1984,8 +2285,7 @@
       { type:'test', q:'They → …', options:['their / theirs', 'theirs / their', 'their / their', 'them / theirs'], correct: 0 },
       { type:'test', q:'«Это моя карта. Она моя.»', options:["This is my card. It's my.", "This is my card. It's mine.", "This is mine card. It's my.", "This is mine card. It's mine."], correct: 1 },
       { type:'translate', q:'Переведи: его (без сущ.)', word: 'его', correct: ['his'] },
-      { type:'test', q:'We → …', options:['our / ours', 'ours / our', 'our / our', 'us / ours'], correct: 0 },
-      { type:'puzzle', q:'Собери предложение:', words: ['This', 'is', 'her', 'car'], correct: 'This is her car' }
+      { type:'puzzle', q:'Собери:', words: ['This', 'is', 'her', 'car'], correct: 'This is her car' }
     ],
     identification: [
       { type:'test', q:'"driving licence" — это…', options:['членская карта', 'водительские права', 'паспорт', 'кредитка'], correct: 1 },
@@ -2001,7 +2301,7 @@
       { type:'test', q:'«Откуда ты?»', options:["Where you from?", "Where are you from?", "Where from you?", "From where you?"], correct: 1 },
       { type:'translate', q:'Переведи:', word: 'Как тебя зовут?', correct: ["what's your name", "what is your name"] },
       { type:'test', q:'«Как это пишется?»', options:["How do you write it?", "How do you spell it?", "How do you say it?", "How do you read it?"], correct: 1 },
-      { type:'puzzle', q:'Собери вопрос:', words: ['What', 'is', 'your', 'name'], correct: 'What is your name' }
+      { type:'puzzle', q:'Собери:', words: ['What', 'is', 'your', 'name'], correct: 'What is your name' }
     ],
     dialogs: [
       { type:'test', q:'Jane … to join the book club.', options:['would like', 'would likes', 'want', 'wants'], correct: 0 },
@@ -2015,24 +2315,20 @@
       { type:'test', q:'«Не такой высокий, как…»', options:['not as tall as', 'not tall as', 'not so tall than', 'no tall as'], correct: 0 },
       { type:'translate', q:'Переведи:', word: 'Билл такой же стройный, как Марк', correct: ['bill is as slim as mark'] },
       { type:'test', q:'«Mark is not as tall … Tony.»', options:['than', 'as', 'like', 'that'], correct: 1 },
-      { type:'puzzle', q:'Собери предложение:', words: ['as', 'tall', 'Bill', 'as', 'Mark', 'is'], correct: 'Bill is as tall as Mark' }
+      { type:'puzzle', q:'Собери:', words: ['as', 'tall', 'Bill', 'as', 'Mark', 'is'], correct: 'Bill is as tall as Mark' }
     ]
   };
 
   const questTitles = {
-    family: '👨‍👩‍👧 Family Members',
+    family: '👨‍👩‍👧 Family',
     appearance: '👤 Appearance',
-    possessive: '🔑 Possessive Case',
-    pronouns: '🔤 Possessive Pronouns',
+    possessive: '🔑 Possessive',
+    pronouns: '🔤 Pronouns',
     identification: '🆔 ID Cards',
-    'personal-info': '💬 Personal Information',
+    'personal-info': '💬 Personal Info',
     dialogs: '🗣️ Dialogues',
     compare: '⚖️ Comparing'
   };
-
-  // =============================================
-  // ============ GAME STATE =====================
-  // =============================================
 
   let state = {
     xp: 0, level: 1, correct: 0, wrong: 0, streak: 0, maxStreak: 0,
@@ -2157,7 +2453,7 @@
     `;
 
     if (q.type === 'test') {
-      html += `<div class="question-text">${q.q}</div><div class="options">`;
+      html += `<div class="question-text">${q.q} <button class="reading-btn" style="padding:4px 10px; font-size:0.8rem;" onclick="speak('${q.q.replace(/'/g, "")}')">🔊</button></div><div class="options">`;
       q.options.forEach((opt, i) => {
         html += `<div class="option" onclick="checkTest(${i}, ${q.correct})">${opt}</div>`;
       });
@@ -2388,18 +2684,24 @@
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeQuest();
+    if (e.key === 'Escape') {
+      closeQuest();
+      document.getElementById('voicePanel').classList.remove('show');
+      document.getElementById('voiceBtn').classList.remove('active');
+    }
   });
 
-  // Init reading progress
-  document.querySelectorAll('.reading-container').forEach(container => {
-    const sectionId = container.closest('.section').id;
-    updateReadProgress(sectionId);
+  // Закрыть панель голоса при клике вне
+  document.addEventListener('click', e => {
+    const panel = document.getElementById('voicePanel');
+    const btn = document.getElementById('voiceBtn');
+    if (panel.classList.contains('show') && !panel.contains(e.target) && !btn.contains(e.target)) {
+      panel.classList.remove('show');
+      btn.classList.remove('active');
+    }
   });
 
-  // =============================================
-  // ============ INIT ==========================
-  // =============================================
+  // Init
   loadState();
 </script>
 
